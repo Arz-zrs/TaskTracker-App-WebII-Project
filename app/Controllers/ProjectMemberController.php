@@ -10,6 +10,12 @@ class ProjectMemberController extends BaseController
     {
         $access = $this->getProjectAccess($projectId);
 
+        if ($access['project']['status'] === 'completed') {
+            return redirect()
+                ->to('/projects/' . $projectId)
+                ->with('error', 'Project sudah selesai dan tidak dapat diubah.');
+        }
+
         if (! $access['is_admin']) {
             return redirect()
                 ->to('/projects/' . $projectId)
@@ -70,6 +76,12 @@ class ProjectMemberController extends BaseController
     public function remove($projectId, $memberId)
     {
         $access = $this->getProjectAccess($projectId);
+
+        if ($access['project']['status'] === 'completed') {
+            return redirect()
+                ->to('/projects/' . $projectId)
+                ->with('error', 'Project sudah selesai dan tidak dapat diubah.');
+        }
 
         if (! $access['is_admin']) {
             return redirect()

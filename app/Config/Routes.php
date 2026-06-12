@@ -13,6 +13,8 @@ $routes->get('/projects', 'ProjectController::index', ['filter' => 'auth']);
 $routes->get('/projects/create', 'ProjectController::create', ['filter' => 'auth']);
 $routes->post('/projects/store', 'ProjectController::store', ['filter' => 'auth']);
 
+$routes->post('/projects/(:num)/complete', 'ProjectController::complete/$1', ['filter' => 'auth']);
+$routes->post('/projects/(:num)/reopen', 'ProjectController::reopen/$1', ['filter' => 'auth']);
 $routes->post('/projects/(:num)/archive', 'ProjectController::archive/$1', ['filter' => 'auth']);
 $routes->get('/projects/(:num)/edit', 'ProjectController::edit/$1', ['filter' => 'auth']);
 $routes->post('/projects/(:num)/update', 'ProjectController::update/$1', ['filter' => 'auth']);

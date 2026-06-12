@@ -10,6 +10,12 @@ class TaskController extends BaseController
     {
         $access = $this->getProjectAccess($projectId);
 
+        if ($access['project']['status'] === 'completed') {
+            return redirect()
+                ->to('/projects/' . $projectId)
+                ->with('error', 'Project sudah selesai dan tidak dapat diubah.');
+        }
+
         if (! $access['is_admin']) {
             return redirect()
                 ->to('/projects/' . $projectId)
@@ -27,6 +33,12 @@ class TaskController extends BaseController
     public function store($projectId)
     {
         $access = $this->getProjectAccess($projectId);
+
+        if ($access['project']['status'] === 'completed') {
+            return redirect()
+                ->to('/projects/' . $projectId)
+                ->with('error', 'Project sudah selesai dan tidak dapat diubah.');
+        }
 
         if (! $access['is_admin']) {
             return redirect()
@@ -98,6 +110,12 @@ class TaskController extends BaseController
 
         $access = $this->getProjectAccess($task['project_id']);
 
+        if ($access['project']['status'] === 'completed') {
+            return redirect()
+                ->to('/projects/' . $task['project_id'])
+                ->with('error', 'Project sudah selesai dan tidak dapat diubah.');
+        }
+
         $isAssignee = (int) $task['assignee_id'] === (int) session()->get('user_id');
         $isAssignedMember = $access['role'] === 'member' && $isAssignee;
 
@@ -150,6 +168,12 @@ class TaskController extends BaseController
 
         $access = $this->getProjectAccess($task['project_id']);
 
+        if ($access['project']['status'] === 'completed') {
+            return redirect()
+                ->to('/projects/' . $task['project_id'])
+                ->with('error', 'Project sudah selesai dan tidak dapat diubah.');
+        }
+
         if (! $access['is_admin']) {
             return redirect()
                 ->to('/projects/' . $task['project_id'])
@@ -181,6 +205,12 @@ class TaskController extends BaseController
         }
 
         $access = $this->getProjectAccess($task['project_id']);
+
+        if ($access['project']['status'] === 'completed') {
+            return redirect()
+                ->to('/projects/' . $task['project_id'])
+                ->with('error', 'Project sudah selesai dan tidak dapat diubah.');
+        }
 
         if (! $access['is_admin']) {
             return redirect()
@@ -249,6 +279,12 @@ class TaskController extends BaseController
 
         $access = $this->getProjectAccess($task['project_id']);
 
+        if ($access['project']['status'] === 'completed') {
+            return redirect()
+                ->to('/projects/' . $task['project_id'])
+                ->with('error', 'Project sudah selesai dan tidak dapat diubah.');
+        }
+        
         if (! $access['is_admin']) {
             return redirect()
                 ->to('/projects/' . $task['project_id'])

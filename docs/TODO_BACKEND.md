@@ -40,6 +40,7 @@
 * [x] Project Role Authorization
 * [x] Project Edit Feature
 * [x] Project Update Logic
+* [x] Project Completed/Reopen Status Handling
 
 ##### Project Member Module
 
@@ -90,10 +91,6 @@
 ---
 
 #### 🚧 In Progress / Partial
-
-##### Project Module
-
-* [ ] Project Completed/Reopen Status Handling
 
 ##### Task Module
 

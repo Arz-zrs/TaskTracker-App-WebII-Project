@@ -13,6 +13,8 @@ $routes->get('/projects', 'ProjectController::index', ['filter' => 'auth']);
 $routes->get('/projects/create', 'ProjectController::create', ['filter' => 'auth']);
 $routes->post('/projects/store', 'ProjectController::store', ['filter' => 'auth']);
 
+$routes->post('/projects/(:num)/complete', 'ProjectController::complete/$1', ['filter' => 'auth']);
+$routes->post('/projects/(:num)/reopen', 'ProjectController::reopen/$1', ['filter' => 'auth']);
 $routes->post('/projects/(:num)/archive', 'ProjectController::archive/$1', ['filter' => 'auth']);
 $routes->get('/projects/(:num)/edit', 'ProjectController::edit/$1', ['filter' => 'auth']);
 $routes->post('/projects/(:num)/update', 'ProjectController::update/$1', ['filter' => 'auth']);
@@ -38,6 +40,8 @@ $routes->post('/tasks/(:num)/comments', 'CommentController::store/$1', ['filter'
 * Route GET `/projects` digunakan untuk menampilkan daftar project.
 * Route GET `/projects/create` digunakan untuk menampilkan form tambah project.
 * Route POST `/projects/store` digunakan untuk menyimpan data project baru.
+* Route POST `/projects/(:num)/complete` digunakan untuk menandai project sebagai selesai (completed) berdasarkan ID project.
+* Route POST `/projects/(:num)/reopen` digunakan untuk membuka kembali project yang telah selesai (completed) menjadi aktif (active) berdasarkan ID project.
 * Route POST `/projects/(:num)/archive` digunakan untuk mengarsipkan project berdasarkan ID.
 * Route GET `/projects/(:num)/edit` digunakan untuk menampilkan form edit project berdasarkan ID project.
 * Route POST `/projects/(:num)/update` digunakan untuk menyimpan perubahan data project berdasarkan ID project.
@@ -72,12 +76,18 @@ Fungsi:
 * Mencatat aktivitas user pada project melalui `logActivity()`.
 * Menyimpan log aktivitas seperti aksi create, update, delete, atau aksi lainnya.
 * Menyimpan informasi log berupa user, project, jenis entity, ID entity, aksi, detail, dan waktu aktivitas.
+* Memformat tanggal dan waktu agar mudah dibaca.
+* Mengubah data activity log menjadi pesan yang lebih deskriptif.
+* Menyiapkan activity log sebelum dikirim ke view.
 
 Method:
 
 ```text
 getProjectAccess($projectId)
 logActivity($projectId, $entityType, $entityId, $action, $detail = null)
+formatDateTime($dateTime)
+formatActivityMessage(array $log)
+formatActivityLogs(array $logs)
 ```
 
 ### AuthController
@@ -104,6 +114,15 @@ Fungsi:
 
 * Menampilkan halaman dashboard setelah login
 * Mengambil nama dan role user dari session
+* Menampilkan halaman dashboard setelah login.
+* Menampilkan statistik project dan task.
+* Menghitung jumlah project aktif yang dapat diakses user.
+* Menghitung jumlah task aktif, task jatuh tempo hari ini, dan task terlambat.
+* Menampilkan project terbaru beserta progress penyelesaiannya.
+* Menampilkan task yang ditugaskan kepada user.
+* Menampilkan deadline task yang akan datang.
+* Menampilkan activity log terbaru dari project yang dapat diakses user.
+* Mengambil nama dan role user dari session.
 
 Method:
 
@@ -145,6 +164,11 @@ Fungsi:
 * Menyimpan perubahan data project hanya jika user adalah admin project.
 * Melakukan validasi input saat mengedit project.
 * Mencatat activity log saat project diperbarui.
+* Menandai project sebagai completed.
+* Membuka kembali project completed menjadi active.
+* Mencegah perubahan project yang telah berstatus completed.
+* Mencatat activity log saat project diselesaikan.
+* Mencatat activity log saat project dibuka kembali.
 
 Method:
 
@@ -156,6 +180,8 @@ store()
 edit($id)
 update($id)
 archive($id)
+complete($id)
+reopen($id)
 ```
 
 ### TaskController
@@ -192,6 +218,10 @@ Fungsi:
 * Memvalidasi status task agar hanya bernilai `todo`, `in_progress`, atau `done`.
 * Mengarahkan kembali ke halaman detail project setelah status task berhasil diubah.
 * Mencatat activity log saat status task diperbarui.
+* Mencegah pembuatan task pada project yang berstatus completed.
+* Mencegah edit task pada project yang berstatus completed.
+* Mencegah perubahan status task pada project yang berstatus completed.
+* Mencegah pengarsipan task pada project yang berstatus completed.
 
 Method:
 
@@ -222,6 +252,8 @@ Fungsi:
 * Menyimpan waktu bergabung member melalui `joined_at`.
 * Memastikan member yang akan dihapus benar-benar berada pada project tersebut.
 * Menampilkan pesan error jika user tidak memiliki akses atau member tidak ditemukan.
+* Mencegah penambahan member jika project berstatus completed.
+* Mencegah penghapusan member jika project berstatus completed.
 
 Method:
 
@@ -290,23 +322,21 @@ Fungsi:
 Route yang sudah memakai AuthFilter:
 
 ```text
-/logout
-/dashboard
-/projects
-/projects/create
-/projects/store
-/projects/{id}
-/projects/{id}/archive
-/projects/{id}/edit
-/projects/{id}/update
-/projects/{id}/members
-/projects/{projectId}/members/{memberId}/remove
-/projects/{id}/tasks/create
-/projects/{id}/tasks/store
-/tasks/{id}/status
+/projects/(:num)
+/projects/(:num)/complete
+/projects/(:num)/reopen
+/projects/(:num)/archive
+/projects/(:num)/edit
+/projects/(:num)/update
+/projects/(:num)/members
+/projects/(:num)/members/(:num)/remove
+/projects/(:num)/tasks/create
+/projects/(:num)/tasks/store
+/tasks/(:num)/archive
+/tasks/(:num)/status
 /tasks/(:num)/edit
 /tasks/(:num)/update
-/tasks/{id}/comments
+/tasks/(:num)/comments
 ```
 
 ### GuestFilter
@@ -353,31 +383,40 @@ Fungsi view:
 ## Fitur yang sudah berjalan
 
 ```text
-Login, logout, session login, dan protected route Dashboard setelah login 
-Menampilkan daftar project berdasarkan akses user sebagai admin atau member 
-Menampilkan detail project beserta member, task, komentar, dan activity log 
-Membuat project, mengedit, mengarsip dengan batasan hanya untuk user role admin 
-Mencatat activity log saat project dibuat 
-Mencatat activity log saat project diarsipkan 
-Menambah dan menghapus member dengan batasan hanya untuk admin project 
-Membuat task baru berdasarkan project dengan batasan hanya untuk admin project 
-Mencatat activity log saat task dibuat 
-Menambahkan assignee ke task dari admin atau member project 
-Memvalidasi input project, member, task, status task, dan komentar 
-Menampilkan task beserta status, priority, deadline, assignee, dan pembuat task 
-Mengubah status task dengan batasan hanya untuk admin project atau assignee 
-Mencatat activity log saat status task diperbarui 
+Login, logout, session login, dan protected route Dashboard setelah login
+Menampilkan daftar project berdasarkan akses user sebagai admin atau member
+Menampilkan detail project beserta member, task, komentar, dan activity log
+Membuat project, mengedit, mengarsip dengan batasan hanya untuk user role admin
+Mencatat activity log saat project dibuat
+Mencatat activity log saat project diarsipkan
+Menambah dan menghapus member dengan batasan hanya untuk admin project
+Membuat task baru berdasarkan project dengan batasan hanya untuk admin project
+Mencatat activity log saat task dibuat
+Menambahkan assignee ke task dari admin atau member project
+Memvalidasi input project, member, task, status task, dan komentar
+Menampilkan task beserta status, priority, deadline, assignee, dan pembuat task
+Mengubah status task dengan batasan hanya untuk admin project atau assignee
+Mencatat activity log saat status task diperbarui
 Menampilkan komentar pada setiap task
 Menambahkan komentar hanya untuk admin project dan member project
 Menyembunyikan form komentar untuk user dengan role klien
-Mencatat activity log saat komentar ditambahkan 
-Menampilkan riwayat activity log berdasarkan aktivitas terbaru 
-Menyembunyikan tombol aksi berdasarkan hak akses user Koneksi database melalui model dan query builder
-Mencegah user yang sudah login mengakses halaman login kembali menggunakan GuestFilter.
-User yang sudah login otomatis diarahkan ke dashboard jika membuka halaman login.
+Mencatat activity log saat komentar ditambahkan
+Menampilkan riwayat activity log berdasarkan aktivitas terbaru
+Menyembunyikan tombol aksi berdasarkan hak akses user
+Koneksi database melalui model dan query builder
+Mencegah user yang sudah login mengakses halaman login kembali menggunakan GuestFilter
+User yang sudah login otomatis diarahkan ke dashboard jika membuka halaman login
 Membuat dan mengedit task berdasarkan project dengan batasan hanya untuk admin project
 Mencatat activity log saat task dibuat dan diperbarui
 Menampilkan tombol edit task hanya untuk admin project
+Mengarsipkan task tanpa menghapus data dari database (soft archive)
+Mencatat activity log saat task diarsipkan
+Menyembunyikan task yang telah diarsipkan dari daftar task aktif, progress project, dashboard, dan statistik
+Menampilkan daftar member project pada halaman daftar project
+Mengubah status project menjadi completed dan membukanya kembali menjadi active
+Mencegah perubahan data project yang sudah berstatus completed
+Mencegah penambahan member, penghapusan member, pembuatan task, edit task, perubahan status task, pengarsipan task, dan penambahan komentar pada project yang telah completed
+Mencatat activity log saat project diselesaikan (completed) dan saat project dibuka kembali (reopen)
 ```
 
 ### Activity Log
@@ -407,11 +446,14 @@ created_at yaitu waktu aktivitas dilakukan.
 
 ```text
 Project dibuat.
+Project diperbarui.
 Project diarsipkan.
+Project diselesaikan (completed).
+Project dibuka kembali (reopen).
 Member ditambahkan ke project.
 Member dihapus dari project.
 Task dibuat.
-Task diedit.
+Task diperbarui.
 Task diarsipkan.
 Status task diperbarui.
 Komentar ditambahkan pada task.
@@ -421,10 +463,10 @@ Komentar ditambahkan pada task.
 
 ```text
 BaseController menyediakan method logActivity() untuk menyimpan activity log.
-ProjectController mencatat aktivitas saat project dibuat dan diarsipkan.
-TaskController mencatat aktivitas saat task dibuat dan status task diperbarui.
-CommentController mencatat aktivitas saat komentar ditambahkan.
+ProjectController mencatat aktivitas saat project dibuat, diperbarui, diarsipkan, diselesaikan (completed), dan dibuka kembali (reopen).
 TaskController mencatat aktivitas saat task dibuat, diperbarui, diarsipkan, dan status task diperbarui.
+CommentController mencatat aktivitas saat komentar ditambahkan.
+
 ```
 
 Method:

@@ -97,6 +97,22 @@ abstract class BaseController extends Controller
                 : "{$user} archived a project.";
         }
 
+        if ($entity === 'project' && $action === 'completed') {
+            $detail = trim(str_replace('Project completed:', '', $detail));
+
+            return $detail
+                ? "{$user} completed project: {$detail}"
+                : "{$user} completed a project.";
+        }
+
+        if ($entity === 'project' && $action === 'reopened') {
+            $detail = trim(str_replace('Project reopened:', '', $detail));
+
+            return $detail
+                ? "{$user} reopened project: {$detail}"
+                : "{$user} reopened a project.";
+        }
+
         if ($entity === 'task' && $action === 'created') {
             $detail = trim(str_replace('Task created:', '', $detail));
 

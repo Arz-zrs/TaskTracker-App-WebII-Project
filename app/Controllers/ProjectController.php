@@ -25,8 +25,8 @@ class ProjectController extends BaseController
                 'left'
             )
             ->groupStart()
-                ->where('projects.admin_id', $userId)
-                ->orWhere('project_members.user_id', $userId)
+            ->where('projects.admin_id', $userId)
+            ->orWhere('project_members.user_id', $userId)
             ->groupEnd()
             ->where('projects.archived_at', null)
             ->groupBy('projects.id')
@@ -277,5 +277,63 @@ class ProjectController extends BaseController
         return redirect()
             ->to('/projects/' . $id)
             ->with('success', 'Project berhasil diperbarui.');
+    }
+
+    public function complete($id)
+    {
+    $access = $this->getProjectAccess($id);
+
+    if (! $access['is_admin']) {
+        return redirect()
+            ->to('/projects/' . $id)
+            ->with('error', 'Kamu tidak punya akses untuk menyelesaikan project ini.');
+    }
+
+    $projectModel = new ProjectModel();
+
+    $projectModel->update($id, [
+        'status' => 'completed',
+    ]);
+
+    $this->logActivity(
+        $id,
+        'project',
+        $id,
+        'completed',
+        'Project completed: ' . $access['project']['title']
+    );
+
+    return redirect()
+        ->to('/projects/' . $id)
+        ->with('success', 'Project berhasil ditandai selesai.');
+    }
+
+    public function reopen($id)
+    {
+        $access = $this->getProjectAccess($id);
+
+        if (! $access['is_admin']) {
+            return redirect()
+                ->to('/projects/' . $id)
+                ->with('error', 'Kamu tidak punya akses untuk membuka ulang project ini.');
+        }
+
+        $projectModel = new ProjectModel();
+
+        $projectModel->update($id, [
+            'status' => 'active',
+        ]);
+
+        $this->logActivity(
+            $id,
+            'project',
+            $id,
+            'reopened',
+            'Project reopened: ' . $access['project']['title']
+        );
+
+        return redirect()
+            ->to('/projects/' . $id)
+            ->with('success', 'Project berhasil dibuka ulang.');
     }
 }

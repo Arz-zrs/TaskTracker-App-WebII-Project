@@ -20,6 +20,12 @@ class CommentController extends BaseController
 
         $access = $this->getProjectAccess($task['project_id']);
 
+        if ($access['project']['status'] === 'completed') {
+        return redirect()
+            ->to('/projects/' . $task['project_id'])
+            ->with('error', 'Project sudah selesai dan tidak dapat diubah.');
+        }
+
         if ($access['role'] === 'klien') {
             return redirect()
                 ->to('/projects/' . $task['project_id'])

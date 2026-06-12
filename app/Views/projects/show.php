@@ -64,6 +64,39 @@
                     Edit Project
                 </a>
 
+                <?php if ($project['status'] === 'active'): ?>
+                    <form
+                        action="/projects/<?= esc($project['id']) ?>/complete"
+                        method="post"
+                        onsubmit="return confirm('Mark this project as completed?')"
+                    >
+                        <?= csrf_field() ?>
+
+                        <button
+                            type="submit"
+                            class="inline-flex items-center gap-2 border border-emerald-200 hover:bg-emerald-50 text-emerald-700 py-2.5 px-4 rounded-xl text-sm font-semibold transition-all duration-200 active:scale-95 shadow-sm"
+                        >
+                            Mark as Completed
+                        </button>
+                    </form>
+
+                <?php elseif ($project['status'] === 'completed'): ?>
+                    <form
+                        action="/projects/<?= esc($project['id']) ?>/reopen"
+                        method="post"
+                        onsubmit="return confirm('Reopen this project?')"
+                    >
+                        <?= csrf_field() ?>
+
+                        <button
+                            type="submit"
+                            class="inline-flex items-center gap-2 border border-amber-200 hover:bg-amber-50 text-amber-700 py-2.5 px-4 rounded-xl text-sm font-semibold transition-all duration-200 active:scale-95 shadow-sm"
+                        >
+                            Reopen Project
+                        </button>
+                    </form>
+                <?php endif; ?>
+
                 <form action="<?= site_url('projects/' . esc($project['id']) . '/archive') ?>" method="post" 
                     onsubmit="return confirm('Are you sure you want to archive this project? Archived projects will not appear on the dashboard.');">
                     <?= csrf_field() ?>
