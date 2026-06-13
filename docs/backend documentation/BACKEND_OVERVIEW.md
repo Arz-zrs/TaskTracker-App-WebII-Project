@@ -31,6 +31,9 @@ $routes->post('/tasks/(:num)/update', 'TaskController::update/$1', ['filter' => 
 $routes->post('/tasks/(:num)/archive', 'TaskController::archive/$1', ['filter' => 'auth']);
 
 $routes->post('/tasks/(:num)/comments', 'CommentController::store/$1', ['filter' => 'auth']);
+$routes->get('/comments/(:num)/edit', 'CommentController::edit/$1', ['filter' => 'auth']);
+$routes->post('/comments/(:num)/update', 'CommentController::update/$1', ['filter' => 'auth']);
+$routes->post('/comments/(:num)/delete', 'CommentController::delete/$1', ['filter' => 'auth']);
 ```
 
 * Route GET `/` digunakan untuk menampilkan halaman login, menggunakan GuestFilter agar user yang sudah login diarahkan ke dashboard.
@@ -55,6 +58,9 @@ $routes->post('/tasks/(:num)/comments', 'CommentController::store/$1', ['filter'
 * Route POST `/tasks/(:num)/update` digunakan untuk menyimpan perubahan data task berdasarkan ID task.
 * Route POST `/tasks/(:num)/archive` digunakan untuk mengarsipkan task berdasarkan ID task dengan mengisi nilai `archived_at`, sehingga task tidak lagi ditampilkan pada daftar task aktif.
 * Route POST `/tasks/(:num)/comments` digunakan untuk menyimpan komentar baru pada task berdasarkan ID task.
+* Route GET `/comments/(:num)/edit` digunakan untuk menampilkan form edit komentar berdasarkan ID komentar.
+* Route POST `/comments/(:num)/update` digunakan untuk menyimpan perubahan komentar berdasarkan ID komentar.
+* Route POST `/comments/(:num)/delete` digunakan untuk menghapus komentar berdasarkan ID komentar.
 
 ## Controller yang sudah dibuat
 
@@ -62,23 +68,13 @@ $routes->post('/tasks/(:num)/comments', 'CommentController::store/$1', ['filter'
 
 Fungsi:
 
-* Menyediakan fungsi dasar yang dapat digunakan oleh controller lain.
-* Mengecek akses user terhadap project melalui `getProjectAccess($projectId)`.
-* Mengambil data project berdasarkan ID project.
-* Memastikan project belum diarsipkan melalui pengecekan `archived_at`.
-* Menampilkan halaman 404 jika project tidak ditemukan.
-* Mengecek apakah user yang sedang login adalah admin project.
-* Memberikan akses admin jika `admin_id` project sama dengan `user_id` session.
-* Mengecek apakah user yang sedang login terdaftar sebagai member project.
-* Memberikan akses view kepada user yang terdaftar sebagai member project.
+* Menyediakan fungsi dasar yang dipakai oleh controller lain.
+* Mengecek akses user ke project melalui `getProjectAccess($projectId)`.
+* Memastikan project ada, belum diarsipkan, dan user memiliki akses sebagai admin atau member.
 * Mengembalikan data project, role user, dan status admin.
-* Menolak akses jika user bukan admin dan bukan member project.
-* Mencatat aktivitas user pada project melalui `logActivity()`.
-* Menyimpan log aktivitas seperti aksi create, update, delete, atau aksi lainnya.
-* Menyimpan informasi log berupa user, project, jenis entity, ID entity, aksi, detail, dan waktu aktivitas.
-* Memformat tanggal dan waktu agar mudah dibaca.
-* Mengubah data activity log menjadi pesan yang lebih deskriptif.
-* Menyiapkan activity log sebelum dikirim ke view.
+* Menolak akses dengan halaman 404 jika project tidak ditemukan atau user tidak memiliki akses.
+* Mencatat aktivitas project melalui `logActivity()`.
+* Memformat waktu dan pesan activity log agar siap ditampilkan di view.
 
 Method:
 
@@ -134,41 +130,17 @@ index()
 
 Fungsi:
 
-* Menampilkan daftar project yang belum diarsipkan.
-* Hanya menampilkan project yang dimiliki user sebagai admin atau member.
-* Menampilkan detail satu project berdasarkan ID.
-* Mengecek akses user ke project melalui `getProjectAccess($id)`.
-* Hanya menampilkan detail project yang belum diarsipkan.
-* Mengambil daftar member project.
-* Mengambil data user yang dapat ditambahkan sebagai member project.
-* Menentukan apakah user dapat mengelola project melalui `canManage`.
-* Menampilkan form tambah project hanya untuk user dengan role `admin`.
-* Menyimpan data project baru hanya untuk user dengan role `admin`.
-* Melakukan validasi input saat membuat project.
-* Menampilkan error jika validasi gagal.
-* Menampilkan halaman 404 jika project tidak ditemukan.
-* Mengarsipkan project hanya jika user adalah admin project.
+* Menampilkan daftar project aktif yang dapat diakses user.
+* Menampilkan detail project berdasarkan ID melalui `getProjectAccess($id)`.
+* Mengambil data member, task, komentar, dan activity log untuk halaman detail project.
+* Menentukan hak kelola project melalui `canManage`.
+* Membatasi pembuatan, edit, archive, complete, dan reopen project hanya untuk admin project.
+* Melakukan validasi input saat membuat dan mengedit project.
 * Mengarsipkan project dengan mengisi nilai `archived_at`.
-* Setelah project diarsipkan, user diarahkan kembali ke halaman daftar project.
-* Mengambil daftar task berdasarkan project ID.
-* Mengambil data task beserta nama assignee dan nama creator.
-* Menampilkan task pada halaman detail project.
-* Menampilkan informasi task seperti title, description, status, priority, deadline, assignee, dan creator.
-* Mengirim data task ke view melalui variabel tasks.
-* Mengirim data activity log ke view melalui variabel activityLogs.
-* Mencatat activity log saat project dibuat.
-* Mencatat activity log saat project diarsipkan.
-* Mengirim role user dalam project ke view melalui variabel projectRole.
-* Menggunakan projectRole untuk membatasi tampilan form komentar bagi user dengan role klien.
-* Menampilkan form edit project berdasarkan ID project.
-* Menyimpan perubahan data project hanya jika user adalah admin project.
-* Melakukan validasi input saat mengedit project.
-* Mencatat activity log saat project diperbarui.
-* Menandai project sebagai completed.
-* Membuka kembali project completed menjadi active.
-* Mencegah perubahan project yang telah berstatus completed.
-* Mencatat activity log saat project diselesaikan.
-* Mencatat activity log saat project dibuka kembali.
+* Mengubah status project menjadi `completed` atau kembali menjadi `active`.
+* Mencegah perubahan project jika status sudah `completed`.
+* Mengirim data pendukung ke view seperti `tasks`, `commentsByTask`, `activityLogs`, dan `projectRole`.
+* Mencatat activity log saat project dibuat, diperbarui, diarsipkan, diselesaikan, atau dibuka kembali.
 
 Method:
 
@@ -188,40 +160,16 @@ reopen($id)
 
 Fungsi:
 
-* Menampilkan form tambah task berdasarkan ID project.
-* Mengecek apakah user memiliki akses sebagai admin project sebelum membuat task.
-* Mengambil daftar user yang dapat dijadikan assignee.
-* Memvalidasi input task seperti title, priority, deadline, dan assignee.
-* Mengecek apakah assignee valid untuk project tersebut.
-* Menyimpan task baru ke database.
-* Mengarahkan kembali ke detail project setelah task berhasil dibuat.
-* Mencatat activity log saat task dibuat.
-* Menampilkan form edit task berdasarkan ID task.
-* Mengecek apakah user memiliki akses sebagai admin project sebelum mengedit task.
-* Mengambil data task yang akan diedit.
-* Mengambil daftar user yang dapat dijadikan assignee saat mengedit task.
-* Memvalidasi input update task seperti title, priority, deadline, dan assignee.
-* Mengecek apakah assignee yang dipilih valid untuk project tersebut.
-* Menyimpan perubahan data task ke database.
-* Mengarahkan kembali ke detail project setelah task berhasil diperbarui.
-* Mencatat activity log saat task diperbarui.
-* Mengarsipkan task berdasarkan ID task.
-* Mengecek apakah task yang akan diarsipkan tersedia di database.
-* Mengecek apakah user memiliki akses sebagai admin project sebelum mengarsipkan task.
-* Mengarsipkan task dengan mengisi nilai `archived_at`.
-* Task yang sudah diarsipkan tidak ditampilkan pada daftar task aktif.
-* Mengarahkan kembali ke detail project setelah task berhasil diarsipkan.
-* Mencatat activity log saat task diarsipkan.
-* Mengubah status task melalui form update status.
-* Mengizinkan admin project untuk mengubah status semua task.
-* Mengizinkan assignee untuk mengubah status task miliknya sendiri.
-* Memvalidasi status task agar hanya bernilai `todo`, `in_progress`, atau `done`.
-* Mengarahkan kembali ke halaman detail project setelah status task berhasil diubah.
-* Mencatat activity log saat status task diperbarui.
-* Mencegah pembuatan task pada project yang berstatus completed.
-* Mencegah edit task pada project yang berstatus completed.
-* Mencegah perubahan status task pada project yang berstatus completed.
-* Mencegah pengarsipan task pada project yang berstatus completed.
+* Menampilkan form tambah dan edit task berdasarkan project atau task ID.
+* Membatasi pembuatan, edit, dan archive task hanya untuk admin project.
+* Mengambil dan memvalidasi assignee yang valid dalam project.
+* Melakukan validasi input task seperti title, priority, deadline, assignee, dan status.
+* Menyimpan task baru, memperbarui task, dan mengarsipkan task dengan `archived_at`.
+* Menyembunyikan task yang sudah diarsipkan dari daftar task aktif.
+* Mengizinkan admin project atau assignee untuk mengubah status task.
+* Membatasi status task hanya `todo`, `in_progress`, atau `done`.
+* Mencegah pembuatan, edit, archive, dan perubahan status task jika project sudah `completed`.
+* Mencatat activity log saat task dibuat, diperbarui, diarsipkan, atau statusnya diubah.
 
 Method:
 
@@ -266,27 +214,24 @@ remove($projectId, $memberId)
 
 Fungsi:
 
-* Menambahkan komentar pada task berdasarkan ID task.
-* Komentar hanya dapat ditambahkan oleh admin project atau member project.
-* User dengan role klien hanya dapat melihat komentar dan tidak dapat menambahkan komentar.
-* Mengecek apakah task yang akan dikomentari tersedia di database.
-* Menampilkan pesan error jika task tidak ditemukan.
+* Menambahkan, mengedit, dan menghapus komentar berdasarkan task atau comment ID.
 * Mengecek akses user ke project melalui `getProjectAccess($projectId)`.
-* Melakukan validasi input komentar melalui field `body`.
-* Membatasi isi komentar maksimal 1000 karakter.
-* Menampilkan pesan error jika validasi komentar gagal.
-* Menyimpan komentar ke database.
-* Menyimpan ID task melalui `task_id`.
-* Menyimpan ID user yang membuat komentar melalui `user_id`.
-* Menyimpan isi komentar melalui `body`.
-* Menyimpan waktu komentar dibuat melalui `created_at`.
-* Mengarahkan kembali ke halaman detail project setelah komentar berhasil ditambahkan.
-* Mencatat activity log saat komentar ditambahkan.
+* Membatasi tambah komentar hanya untuk admin project atau member project.
+* Membatasi edit komentar hanya untuk pemilik komentar.
+* Membatasi hapus komentar hanya untuk pemilik komentar atau admin project.
+* Mencegah user dengan role `klien` untuk menambahkan atau mengedit komentar.
+* Melakukan validasi field `body` dengan batas maksimal 1000 karakter.
+* Mencegah tambah, edit, dan hapus komentar jika project sudah `completed`.
+* Mengarahkan kembali ke detail project setelah komentar berhasil dibuat, diperbarui, atau dihapus.
+* Mencatat activity log saat komentar dibuat, diperbarui, atau dihapus.
 
 Method:
 
 ```text
-store($taskId)
+store($taskId) 
+edit($commentId) 
+update($commentId) 
+delete($commentId)
 ```
 
 ## Model yang sudah dibuat
@@ -337,6 +282,9 @@ Route yang sudah memakai AuthFilter:
 /tasks/(:num)/edit
 /tasks/(:num)/update
 /tasks/(:num)/comments
+/comments/(:num)/edit 
+/comments/(:num)/update 
+/comments/(:num)/delete
 ```
 
 ### GuestFilter
@@ -367,6 +315,7 @@ projects/create.php
 projects/edit.php
 tasks/create.php
 tasks/edit.php
+comments/edit.php digunakan untuk menampilkan form edit komentar yang sudah ada.
 ```
 
 Fungsi view:
@@ -379,6 +328,7 @@ Fungsi view:
 * projects/edit.php digunakan untuk menampilkan form edit project yang sudah ada.
 * tasks/create.php digunakan untuk menampilkan form pembuatan task baru pada project tertentu.
 * tasks/edit.php digunakan untuk menampilkan form edit task yang sudah ada, seperti title, description, priority, deadline, dan assignee pada project tertentu.
+* comments/edit.php digunakan untuk menampilkan form edit komentar yang sudah ada.
 
 ## Fitur yang sudah berjalan
 
@@ -401,6 +351,15 @@ Menampilkan komentar pada setiap task
 Menambahkan komentar hanya untuk admin project dan member project
 Menyembunyikan form komentar untuk user dengan role klien
 Mencatat activity log saat komentar ditambahkan
+Mengedit komentar berdasarkan ID komentar. 
+Menghapus komentar berdasarkan ID komentar. 
+Menampilkan tombol edit komentar hanya untuk pemilik komentar. 
+Menampilkan tombol delete komentar hanya untuk pemilik komentar atau admin project. 
+Mencegah user dengan role klien untuk menambahkan dan mengedit komentar. 
+Mencegah edit dan hapus komentar pada project yang telah completed. 
+Memvalidasi input komentar saat komentar dibuat dan diperbarui. 
+Mencatat activity log saat komentar diperbarui. 
+Mencatat activity log saat komentar dihapus.
 Menampilkan riwayat activity log berdasarkan aktivitas terbaru
 Menyembunyikan tombol aksi berdasarkan hak akses user
 Koneksi database melalui model dan query builder
@@ -417,6 +376,7 @@ Mengubah status project menjadi completed dan membukanya kembali menjadi active
 Mencegah perubahan data project yang sudah berstatus completed
 Mencegah penambahan member, penghapusan member, pembuatan task, edit task, perubahan status task, pengarsipan task, dan penambahan komentar pada project yang telah completed
 Mencatat activity log saat project diselesaikan (completed) dan saat project dibuka kembali (reopen)
+
 ```
 
 ### Activity Log
@@ -457,6 +417,8 @@ Task diperbarui.
 Task diarsipkan.
 Status task diperbarui.
 Komentar ditambahkan pada task.
+Komentar diperbarui. 
+Komentar dihapus.
 ```
 
 #### Controller yang menggunakan Activity Log:
@@ -465,8 +427,7 @@ Komentar ditambahkan pada task.
 BaseController menyediakan method logActivity() untuk menyimpan activity log.
 ProjectController mencatat aktivitas saat project dibuat, diperbarui, diarsipkan, diselesaikan (completed), dan dibuka kembali (reopen).
 TaskController mencatat aktivitas saat task dibuat, diperbarui, diarsipkan, dan status task diperbarui.
-CommentController mencatat aktivitas saat komentar ditambahkan.
-
+CommentController mencatat aktivitas saat komentar ditambahkan, diperbarui, dan dihapus.
 ```
 
 Method:

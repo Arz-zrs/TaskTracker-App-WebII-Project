@@ -26,6 +26,17 @@
 
 * [x] Dashboard Controller
 * [x] Protected Dashboard Page
+* [x] Fix Activity Log Timestamp Display
+* [x] Fix Activity Log Timestamp Display
+* [x] Format Activity Log Messages into Readable Text
+* [x] Create Dashboard Summary Query for Total Projects
+* [x] Create Dashboard Summary Query for Active Tasks
+* [x] Create Dashboard Summary Query for Tasks Due Today
+* [x] Create Dashboard Summary Query for Overdue Tasks
+* [x] Display Assigned Tasks for Logged-in User
+* [x] Display Nearest Deadlines
+* [x] Display Recent Team Activity
+* [x] Calculate Project Progress Percentage
 
 ##### Project Module
 
@@ -68,6 +79,8 @@
 * [x] Task Edit Feature
 * [x] Task Update Logic
 * [x] Task Archive Handling
+* [x] Full Task CRUD
+* [x] Deadline Handling
 
 ##### Comment Module
 
@@ -75,6 +88,9 @@
 * [x] Add Comment to Task
 * [x] Display Task Comments
 * [x] Basic Comment Validation
+* [x] Full Comment CRUD
+* [x] Comment Edit Feature
+* [x] Comment Delete Feature
 
 ##### Activity Log Module
 
@@ -84,6 +100,7 @@
 * [x] Activity Log for Task Actions
 * [x] Activity Log for Comment Actions
 
+
 ##### Validation & Security
 
 * [x]  Remove Temporary Test Routes and Test Controllers
@@ -91,30 +108,6 @@
 ---
 
 #### 🚧 In Progress / Partial
-
-##### Task Module
-
-* [ ] Full Task CRUD
-* [ ] Deadline Handling
-
-##### Comment Module
-
-* [ ] Full Comment CRUD
-* [ ] Comment Edit Feature
-* [ ] Comment Delete Feature
-
-##### Dashboard Backend
-
-* [ ] Fix Activity Log Timestamp Display
-* [ ] Format Activity Log Messages into Readable Text
-* [ ] Create Dashboard Summary Query for Total Projects
-* [ ] Create Dashboard Summary Query for Active Tasks
-* [ ] Create Dashboard Summary Query for Tasks Due Today
-* [ ] Create Dashboard Summary Query for Overdue Tasks
-* [ ] Display Assigned Tasks for Logged-in User
-* [ ] Display Nearest Deadlines
-* [ ] Display Recent Team Activity
-* [ ] Calculate Project Progress Percentage
 
 ---
 
