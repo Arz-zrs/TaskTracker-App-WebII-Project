@@ -39,10 +39,16 @@ $routes->post('/tasks/(:num)/comments', 'CommentController::store/$1', ['filter'
 $routes->get('/comments/(:num)/edit', 'CommentController::edit/$1', ['filter' => 'auth']);
 $routes->post('/comments/(:num)/update', 'CommentController::update/$1', ['filter' => 'auth']);
 $routes->post('/comments/(:num)/delete', 'CommentController::delete/$1', ['filter' => 'auth']);
+
+$routes->get('/settings', 'AccountController::index', ['filter' => 'auth']);
+$routes->post('/settings/profile', 'AccountController::updateProfile', ['filter' => 'auth']);
+$routes->post('/settings/password', 'AccountController::updatePassword', ['filter' => 'auth']);
 ```
 
 * Route GET `/` digunakan untuk menampilkan halaman login, menggunakan GuestFilter agar user yang sudah login diarahkan ke dashboard.
 * Route POST `/login` digunakan untuk memproses percobaan login, menggunakan GuestFilter agar user yang sudah login tidak memproses login ulang.
+* Route GET `/register` digunakan untuk menampilkan halaman register, menggunakan GuestFilter agar user yang sudah login diarahkan ke dashboard.
+* Route POST `/register` digunakan untuk memproses pembuatan akun baru, menggunakan GuestFilter agar user yang sudah login tidak melakukan register ulang.
 * Route GET `/logout` digunakan untuk keluar dari akun.
 * Route GET `/dashboard` digunakan untuk menampilkan halaman dashboard.
 * Route GET `/projects` digunakan untuk menampilkan daftar project.
@@ -67,6 +73,9 @@ $routes->post('/comments/(:num)/delete', 'CommentController::delete/$1', ['filte
 * Route GET `/comments/(:num)/edit` digunakan untuk menampilkan form edit komentar berdasarkan ID komentar.
 * Route POST `/comments/(:num)/update` digunakan untuk menyimpan perubahan komentar berdasarkan ID komentar.
 * Route POST `/comments/(:num)/delete` digunakan untuk menghapus komentar berdasarkan ID komentar.
+* Route GET `/settings` digunakan untuk menampilkan halaman pengaturan akun.
+* Route POST `/settings/profile` digunakan untuk menyimpan perubahan profil user, seperti nama dan avatar.
+* Route POST `/settings/password` digunakan untuk menyimpan perubahan password user.
 
 ## Controller yang sudah dibuat
 
@@ -114,7 +123,7 @@ Method:
 login()
 attemptLogin()
 register() 
-attemptRegister
+attemptRegister()
 logout()
 ```
 
@@ -124,7 +133,6 @@ Fungsi:
 
 * Menampilkan halaman dashboard setelah login
 * Mengambil nama dan role user dari session
-* Menampilkan halaman dashboard setelah login.
 * Menampilkan statistik project dan task.
 * Menghitung jumlah project aktif yang dapat diakses user.
 * Menghitung jumlah task aktif, task jatuh tempo hari ini, dan task terlambat.
@@ -132,12 +140,36 @@ Fungsi:
 * Menampilkan task yang ditugaskan kepada user.
 * Menampilkan deadline task yang akan datang.
 * Menampilkan activity log terbaru dari project yang dapat diakses user.
-* Mengambil nama dan role user dari session.
 
 Method:
 
 ```text
 index()
+```
+
+### AccountController
+
+Fungsi:
+
+* Menampilkan halaman pengaturan akun.
+* Mengambil data user yang sedang login berdasarkan `user_id` session.
+* Memperbarui profil user seperti nama dan avatar.
+* Melakukan validasi nama saat update profil.
+* Melakukan validasi avatar seperti ukuran maksimal 2MB, format gambar, dan mime type.
+* Menyimpan avatar ke folder `public/uploads/avatars`.
+* Menyimpan path avatar ke database.
+* Memperbarui `user_name` pada session setelah nama berhasil diubah.
+* Mengubah password akun.
+* Memvalidasi password lama, password baru, dan konfirmasi password.
+* Mengecek password lama menggunakan `password_verify()`.
+* Menyimpan password baru menggunakan `password_hash()`.
+
+Method:
+
+```text
+index()
+updateProfile()
+updatePassword()
 ```
 
 ### ProjectController
@@ -254,6 +286,7 @@ update($commentId)
 delete($commentId)
 ```
 
+
 ## Model yang sudah dibuat
 
 ```text
@@ -307,6 +340,9 @@ Route yang sudah memakai AuthFilter:
 /comments/(:num)/edit 
 /comments/(:num)/update 
 /comments/(:num)/delete
+/settings
+/settings/profile
+/settings/password
 ```
 
 ### GuestFilter
@@ -340,6 +376,7 @@ projects/edit.php
 tasks/create.php
 tasks/edit.php
 comments/edit.php
+account/settings.php
 ```
 
 Fungsi view:
@@ -354,6 +391,7 @@ Fungsi view:
 * tasks/create.php digunakan untuk menampilkan form pembuatan task baru pada project tertentu.
 * tasks/edit.php digunakan untuk menampilkan form edit task yang sudah ada, seperti title, description, priority, deadline, dan assignee pada project tertentu.
 * comments/edit.php digunakan untuk menampilkan form edit komentar yang sudah ada.
+* account/settings.php digunakan untuk menampilkan halaman pengaturan akun, update profil, upload avatar, dan perubahan password.
 
 ## Fitur yang sudah berjalan
 
@@ -404,6 +442,9 @@ Mencegah penambahan member, penghapusan member, pembuatan task, edit task, perub
 Mencatat activity log saat project diselesaikan (completed) dan saat project dibuka kembali (reopen)
 Mencegah perubahan data pada task yang sudah diarsipkan. 
 Mencegah penambahan, edit, update, dan hapus komentar pada task yang sudah diarsipkan.
+Mengubah profil akun seperti nama dan avatar.
+Mengubah password akun dengan validasi password lama dan konfirmasi password baru.
+Menampilkan avatar user pada dashboard jika avatar tersedia.
 ```
 
 ### Activity Log
@@ -439,7 +480,7 @@ Project diselesaikan (completed).
 Project dibuka kembali (reopen).
 Member ditambahkan ke project.
 Member dihapus dari project.
-Member role diganti di project
+Role member diperbarui.
 Task dibuat.
 Task diperbarui.
 Task diarsipkan.

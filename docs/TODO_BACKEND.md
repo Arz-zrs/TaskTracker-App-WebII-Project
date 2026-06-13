@@ -104,7 +104,6 @@
 * [x] Activity Log for Comment Actions
 * [x] Standardize Activity Log Action Names
 
-
 ##### Validation & Security
 
 * [x] Remove Temporary Test Routes and Test Controllers
@@ -124,13 +123,16 @@
 * [x] Permission Testing
 * [x] Dashboard Data Testing
 
+##### Misc
+
+* [x] Account Settings Page
+
 ---
 
 #### 🚧 In Progress / Partial
 
 ##### Remaining Practical Features
 
-* [ ] Account Settings Page
 * [ ] Timeline Page Backend
 * [ ] Notification Bell Backend
 * [ ] Admin User Role Management / Admin Handoff
