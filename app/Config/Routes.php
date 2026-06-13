@@ -39,7 +39,7 @@ $routes->post('/tasks/(:num)/comments', 'CommentController::store/$1', ['filter'
 $routes->get('/comments/(:num)/edit', 'CommentController::edit/$1', ['filter' => 'auth']);
 $routes->post('/comments/(:num)/update', 'CommentController::update/$1', ['filter' => 'auth']);
 $routes->post('/comments/(:num)/delete', 'CommentController::delete/$1', ['filter' => 'auth']);
-    
+
 $routes->get('/settings', 'AccountController::index', ['filter' => 'auth']);
 $routes->post('/settings/profile', 'AccountController::updateProfile', ['filter' => 'auth']);
 $routes->post('/settings/password', 'AccountController::updatePassword', ['filter' => 'auth']);
@@ -47,3 +47,5 @@ $routes->post('/settings/password', 'AccountController::updatePassword', ['filte
 $routes->get('/timeline', 'TimelineController::index', ['filter' => 'auth']);
 
 $routes->get('/notifications', 'NotificationController::index', ['filter' => 'auth']);
+
+$routes->get('/search', 'SearchController::index', ['filter' => 'auth']);

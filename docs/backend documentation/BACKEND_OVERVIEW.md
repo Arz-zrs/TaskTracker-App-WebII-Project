@@ -3,11 +3,6 @@
 ## Routes yang sudah dibuat
 
 ```php
-<?php
-
-use CodeIgniter\Router\RouteCollection;
-
-/** @var RouteCollection $routes */
 $routes->get('/', 'AuthController::login', ['filter' => 'guest']);
 
 $routes->post('/login', 'AuthController::attemptLogin', ['filter' => 'guest']);
@@ -44,7 +39,7 @@ $routes->post('/tasks/(:num)/comments', 'CommentController::store/$1', ['filter'
 $routes->get('/comments/(:num)/edit', 'CommentController::edit/$1', ['filter' => 'auth']);
 $routes->post('/comments/(:num)/update', 'CommentController::update/$1', ['filter' => 'auth']);
 $routes->post('/comments/(:num)/delete', 'CommentController::delete/$1', ['filter' => 'auth']);
-    
+
 $routes->get('/settings', 'AccountController::index', ['filter' => 'auth']);
 $routes->post('/settings/profile', 'AccountController::updateProfile', ['filter' => 'auth']);
 $routes->post('/settings/password', 'AccountController::updatePassword', ['filter' => 'auth']);
@@ -52,6 +47,8 @@ $routes->post('/settings/password', 'AccountController::updatePassword', ['filte
 $routes->get('/timeline', 'TimelineController::index', ['filter' => 'auth']);
 
 $routes->get('/notifications', 'NotificationController::index', ['filter' => 'auth']);
+
+$routes->get('/search', 'SearchController::index', ['filter' => 'auth']);
 ```
 
 * Route GET `/` digunakan untuk menampilkan halaman login, menggunakan GuestFilter agar user yang sudah login diarahkan ke dashboard.
@@ -87,6 +84,7 @@ $routes->get('/notifications', 'NotificationController::index', ['filter' => 'au
 * Route POST `/settings/password` digunakan untuk menyimpan perubahan password user.
 * Route GET `/timeline` digunakan untuk menampilkan halaman timeline aktivitas project yang dapat diakses oleh user.
 * Route GET `/notifications` digunakan untuk menampilkan halaman notifikasi user yang sedang login.
+* Route GET `/search` digunakan untuk menampilkan halaman pencarian project dan task yang dapat diakses oleh user yang sedang login.
 
 ## Controller yang sudah dibuat
 
@@ -339,6 +337,32 @@ Method:
 index()
 ```
 
+### SearchController
+
+Fungsi:
+
+* Menampilkan halaman pencarian project dan task.
+* Mengambil keyword pencarian dari query parameter `q`.
+* Mengambil ID project yang dapat diakses user melalui `getAccessibleProjectIdsForUser($userId)`.
+* Jika keyword pencarian kosong, halaman tetap ditampilkan tanpa hasil project dan task.
+* Jika user tidak memiliki project yang dapat diakses, halaman tetap ditampilkan dengan hasil kosong.
+* Mencari project berdasarkan title atau description.
+* Hanya menampilkan project yang dapat diakses user dan belum diarsipkan.
+* Mencari task berdasarkan title atau description.
+* Hanya menampilkan task dari project yang dapat diakses user.
+* Hanya menampilkan task yang belum diarsipkan dan berada pada project yang belum diarsipkan.
+* Menghubungkan data task dengan project untuk menampilkan nama project.
+* Menghubungkan data task dengan user untuk menampilkan nama assignee.
+* Membatasi hasil pencarian project maksimal 20 data.
+* Membatasi hasil pencarian task maksimal 30 data.
+* Mengirim data `q`, `projects`, dan `tasks` ke view `search/index`.
+
+Method:
+
+```text
+index()
+```
+
 ## Model yang sudah dibuat
 
 ```text
@@ -373,6 +397,11 @@ Fungsi:
 Route yang sudah memakai AuthFilter:
 
 ```text
+/logout
+/dashboard
+/projects
+/projects/create
+/projects/store
 /projects/(:num)
 /projects/(:num)/complete
 /projects/(:num)/reopen
@@ -389,14 +418,15 @@ Route yang sudah memakai AuthFilter:
 /tasks/(:num)/edit
 /tasks/(:num)/update
 /tasks/(:num)/comments
-/comments/(:num)/edit 
-/comments/(:num)/update 
+/comments/(:num)/edit
+/comments/(:num)/update
 /comments/(:num)/delete
 /settings
 /settings/profile
 /settings/password
 /timeline
 /notifications
+/search
 ```
 
 ### GuestFilter
@@ -412,9 +442,10 @@ Fungsi:
 Route yang sudah memakai GuestFilter:
 
 ```text
-/
-/login
-/register
+GET /
+POST /login
+GET /register
+POST /register
 ```
 
 ## View yang sudah dibuat   
@@ -433,6 +464,7 @@ comments/edit.php
 account/settings.php
 timeline/index.php
 notifications/index.php
+search/index.php
 ```
 
 Fungsi view:
@@ -450,6 +482,7 @@ Fungsi view:
 * account/settings.php digunakan untuk menampilkan halaman pengaturan akun, update profil, upload avatar, dan perubahan password.
 * timeline/index.php digunakan untuk menampilkan daftar timeline aktivitas project user.
 * notifications/index.php digunakan untuk menampilkan halaman notifikasi, termasuk task terlambat, task deadline hari ini, task deadline mendatang, dan activity log terbaru.
+* search/index.php digunakan untuk menampilkan halaman pencarian project dan task.
 
 ## Fitur yang sudah berjalan
 
@@ -514,6 +547,12 @@ Menampilkan activity log terbaru dari project yang dapat diakses user.
 Menghitung jumlah notifikasi berdasarkan task terlambat, task deadline hari ini, dan task deadline mendatang.
 Menyembunyikan notifikasi dari project yang sudah diarsipkan atau berstatus completed.
 Menyembunyikan task yang sudah selesai atau sudah diarsipkan dari daftar notifikasi.
+Menampilkan halaman pencarian project dan task untuk user yang sedang login.
+Mencari project berdasarkan title atau description.
+Mencari task berdasarkan title atau description.
+Menampilkan hasil pencarian hanya dari project yang dapat diakses user.
+Menyembunyikan project dan task yang sudah diarsipkan dari hasil pencarian.
+Menampilkan informasi task seperti project, assignee, status, priority, deadline, dan description jika tersedia.
 ```
 
 ### Activity Log

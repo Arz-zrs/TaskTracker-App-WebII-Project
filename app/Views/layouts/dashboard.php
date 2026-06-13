@@ -139,16 +139,22 @@
                     </svg>
                 </button>
 
-                <div class="relative flex-1">
+                <form action="<?= site_url('search') ?>" method="get" class="relative flex-1">
                     <span class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-slate-600">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor" class="w-5 h-5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.602 10.602Z" />
                         </svg>
                     </span>
-                    <input type="text" 
-                            placeholder="Search tasks or projects..." 
-                            class="w-full bg-white border border-slate-200/60 rounded-full pl-12 pr-4 py-2.5 text-sm text-slate-800 placeholder-slate-500 focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 transition-all duration-200 shadow-sm">
-                </div>
+
+                    <input 
+                        type="text"
+                        name="q"
+                        value="<?= esc($_GET['q'] ?? '') ?>"
+                        placeholder="Search tasks or projects..." 
+                        class="w-full bg-white border border-slate-200/60 rounded-full pl-12 pr-4 py-2.5 text-sm text-slate-800 placeholder-slate-500 focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 transition-all duration-200 shadow-sm"
+                    >
+                </form>
+
             </div>
 
             <!-- Profile and Icons -->

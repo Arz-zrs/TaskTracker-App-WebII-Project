@@ -128,18 +128,10 @@
 * [x] Account Settings Page
 * [x] Timeline Page Backend
 * [x] Notification Bell Backend
+* [x] Search Backend Logic for Projects and Tasks
 
 ---
 
 #### 🚧 In Progress / Partial
 
-##### Remaining Practical Features
-
-* [ ] Admin User Role Management / Admin Handoff
----
-
-#### ❌ Not Started
-
-##### Authorization & Roles
-
-* [ ] Final Permission Testing
+ * [ ] Final Permission Testing
