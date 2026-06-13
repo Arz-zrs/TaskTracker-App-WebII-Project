@@ -126,6 +126,7 @@
 ##### Misc
 
 * [x] Account Settings Page
+* [x] Timeline Page Backend
 
 ---
 
@@ -133,7 +134,6 @@
 
 ##### Remaining Practical Features
 
-* [ ] Timeline Page Backend
 * [ ] Notification Bell Backend
 * [ ] Admin User Role Management / Admin Handoff
 ---

@@ -43,3 +43,5 @@ $routes->post('/comments/(:num)/delete', 'CommentController::delete/$1', ['filte
 $routes->get('/settings', 'AccountController::index', ['filter' => 'auth']);
 $routes->post('/settings/profile', 'AccountController::updateProfile', ['filter' => 'auth']);
 $routes->post('/settings/password', 'AccountController::updatePassword', ['filter' => 'auth']);
+
+$routes->get('/timeline', 'TimelineController::index', ['filter' => 'auth']);

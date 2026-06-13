@@ -3,6 +3,11 @@
 ## Routes yang sudah dibuat
 
 ```php
+<?php
+
+use CodeIgniter\Router\RouteCollection;
+
+/** @var RouteCollection $routes */
 $routes->get('/', 'AuthController::login', ['filter' => 'guest']);
 
 $routes->post('/login', 'AuthController::attemptLogin', ['filter' => 'guest']);
@@ -43,6 +48,8 @@ $routes->post('/comments/(:num)/delete', 'CommentController::delete/$1', ['filte
 $routes->get('/settings', 'AccountController::index', ['filter' => 'auth']);
 $routes->post('/settings/profile', 'AccountController::updateProfile', ['filter' => 'auth']);
 $routes->post('/settings/password', 'AccountController::updatePassword', ['filter' => 'auth']);
+
+$routes->get('/timeline', 'TimelineController::index', ['filter' => 'auth']);
 ```
 
 * Route GET `/` digunakan untuk menampilkan halaman login, menggunakan GuestFilter agar user yang sudah login diarahkan ke dashboard.
@@ -76,6 +83,7 @@ $routes->post('/settings/password', 'AccountController::updatePassword', ['filte
 * Route GET `/settings` digunakan untuk menampilkan halaman pengaturan akun.
 * Route POST `/settings/profile` digunakan untuk menyimpan perubahan profil user, seperti nama dan avatar.
 * Route POST `/settings/password` digunakan untuk menyimpan perubahan password user.
+* Route GET `/timeline` digunakan untuk menampilkan halaman timeline aktivitas project yang dapat diakses oleh user.
 
 ## Controller yang sudah dibuat
 
@@ -286,6 +294,24 @@ update($commentId)
 delete($commentId)
 ```
 
+### TimelineController
+
+Fungsi:
+
+* Menampilkan halaman timeline berdasarkan project yang dapat diakses user.
+* Mengambil ID project yang dapat diakses melalui `getAccessibleProjectIdsForUser($userId)`.
+* Menampilkan daftar deadline task dari project aktif yang belum diarsipkan.
+* Menampilkan activity log terbaru dari project yang dapat diakses user.
+* Mendukung pilihan tampilan melalui query parameter `view`.
+* Menghubungkan data deadline dengan project dan assignee.
+* Menghubungkan activity log dengan user dan project.
+* Memformat activity log sebelum dikirim ke view.
+
+Method:
+
+```text
+index()
+```
 
 ## Model yang sudah dibuat
 
@@ -343,6 +369,7 @@ Route yang sudah memakai AuthFilter:
 /settings
 /settings/profile
 /settings/password
+/timeline
 ```
 
 ### GuestFilter
@@ -377,6 +404,7 @@ tasks/create.php
 tasks/edit.php
 comments/edit.php
 account/settings.php
+timeline/index.php
 ```
 
 Fungsi view:
@@ -392,6 +420,7 @@ Fungsi view:
 * tasks/edit.php digunakan untuk menampilkan form edit task yang sudah ada, seperti title, description, priority, deadline, dan assignee pada project tertentu.
 * comments/edit.php digunakan untuk menampilkan form edit komentar yang sudah ada.
 * account/settings.php digunakan untuk menampilkan halaman pengaturan akun, update profil, upload avatar, dan perubahan password.
+* timeline/index.php digunakan untuk menampilkan daftar timeline aktivitas project user.
 
 ## Fitur yang sudah berjalan
 
@@ -445,6 +474,9 @@ Mencegah penambahan, edit, update, dan hapus komentar pada task yang sudah diars
 Mengubah profil akun seperti nama dan avatar.
 Mengubah password akun dengan validasi password lama dan konfirmasi password baru.
 Menampilkan avatar user pada dashboard jika avatar tersedia.
+Menampilkan halaman timeline berisi deadline task dan activity log project yang dapat diakses user.
+Menampilkan deadline task aktif berdasarkan project yang belum diarsipkan.
+Menampilkan activity log terbaru pada halaman timeline.
 ```
 
 ### Activity Log
