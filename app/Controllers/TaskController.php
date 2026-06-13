@@ -88,7 +88,7 @@ class TaskController extends BaseController
             'task',
             $taskId,
             'created',
-            'created task: "' . $this->request->getPost('title') . '"'
+            'Task created: ' . $this->request->getPost('title')
         );
 
         return redirect()
@@ -106,6 +106,12 @@ class TaskController extends BaseController
             return redirect()
                 ->to('/projects')
                 ->with('error', 'Task tidak ditemukan.');
+        }
+
+        if (! empty($task['archived_at'])) {
+            return redirect()
+                ->to('/projects/' . $task['project_id'])
+                ->with('error', 'Task sudah diarsipkan dan tidak dapat diubah.');
         }
 
         $access = $this->getProjectAccess($task['project_id']);
@@ -145,8 +151,8 @@ class TaskController extends BaseController
             $task['project_id'],
             'task',
             $taskId,
-            'status_changed',
-            'updated task status: "' . $task['title'] . '" to ' . $newStatus
+            'status_updated',
+            'Task status changed to ' . $newStatus
         );
 
         return redirect()
@@ -164,6 +170,12 @@ class TaskController extends BaseController
             return redirect()
                 ->to('/projects')
                 ->with('error', 'Task tidak ditemukan.');
+        }
+
+        if (! empty($task['archived_at'])) {
+            return redirect()
+                ->to('/projects/' . $task['project_id'])
+                ->with('error', 'Task sudah diarsipkan dan tidak dapat diubah.');
         }
 
         $access = $this->getProjectAccess($task['project_id']);
@@ -202,6 +214,12 @@ class TaskController extends BaseController
             return redirect()
                 ->to('/projects')
                 ->with('error', 'Task tidak ditemukan.');
+        }
+
+        if (! empty($task['archived_at'])) {
+            return redirect()
+                ->to('/projects/' . $task['project_id'])
+                ->with('error', 'Task sudah diarsipkan dan tidak dapat diubah.');
         }
 
         $access = $this->getProjectAccess($task['project_id']);
@@ -257,7 +275,7 @@ class TaskController extends BaseController
             'task',
             $taskId,
             'updated',
-            'updated task: "' . $title . '"'
+            'Task updated: ' . $title
         );
 
         return redirect()
@@ -277,6 +295,12 @@ class TaskController extends BaseController
                 ->with('error', 'Task tidak ditemukan.');
         }
 
+        if (! empty($task['archived_at'])) {
+            return redirect()
+                ->to('/projects/' . $task['project_id'])
+                ->with('error', 'Task sudah diarsipkan.');
+        }
+
         $access = $this->getProjectAccess($task['project_id']);
 
         if ($access['project']['status'] === 'completed') {
@@ -284,7 +308,7 @@ class TaskController extends BaseController
                 ->to('/projects/' . $task['project_id'])
                 ->with('error', 'Project sudah selesai dan tidak dapat diubah.');
         }
-        
+
         if (! $access['is_admin']) {
             return redirect()
                 ->to('/projects/' . $task['project_id'])
@@ -300,12 +324,12 @@ class TaskController extends BaseController
             'task',
             $taskId,
             'archived',
-            'archived task: "' . $task['title'] . '"'
+            'Task archived: ' . $task['title']
         );
 
         return redirect()
             ->to('/projects/' . $task['project_id'])
-        ->with('success', 'Task berhasil diarsipkan.');
+            ->with('success', 'Task berhasil diarsipkan.');
     }
 
     private function getAssignableUsers($projectId, $adminId)

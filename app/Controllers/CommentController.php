@@ -18,12 +18,18 @@ class CommentController extends BaseController
                 ->with('error', 'Task tidak ditemukan.');
         }
 
+        if (! empty($task['archived_at'])) {
+            return redirect()
+                ->to('/projects/' . $task['project_id'])
+                ->with('error', 'Task sudah diarsipkan dan komentar tidak dapat ditambahkan.');
+        }
+
         $access = $this->getProjectAccess($task['project_id']);
 
         if ($access['project']['status'] === 'completed') {
-        return redirect()
-            ->to('/projects/' . $task['project_id'])
-            ->with('error', 'Project sudah selesai dan tidak dapat diubah.');
+            return redirect()
+                ->to('/projects/' . $task['project_id'])
+                ->with('error', 'Project sudah selesai dan tidak dapat diubah.');
         }
 
         if ($access['role'] === 'klien') {
@@ -60,6 +66,7 @@ class CommentController extends BaseController
             'created',
             'added comment: "' . $commentBody . '" on task: "' . $task['title'] . '"'
         );
+
         return redirect()
             ->to('/projects/' . $task['project_id'])
             ->with('success', 'Komentar berhasil ditambahkan.');
@@ -78,6 +85,12 @@ class CommentController extends BaseController
         $comment = $context['comment'];
         $task = $context['task'];
         $access = $context['access'];
+
+        if (! empty($task['archived_at'])) {
+            return redirect()
+                ->to('/projects/' . $task['project_id'])
+                ->with('error', 'Task sudah diarsipkan dan komentar tidak dapat diubah.');
+        }
 
         if ($access['project']['status'] === 'completed') {
             return redirect()
@@ -117,6 +130,12 @@ class CommentController extends BaseController
         $comment = $context['comment'];
         $task = $context['task'];
         $access = $context['access'];
+
+        if (! empty($task['archived_at'])) {
+            return redirect()
+                ->to('/projects/' . $task['project_id'])
+                ->with('error', 'Task sudah diarsipkan dan komentar tidak dapat diubah.');
+        }
 
         if ($access['project']['status'] === 'completed') {
             return redirect()
@@ -163,7 +182,7 @@ class CommentController extends BaseController
             'updated',
             'updated comment from: "' . $commentBeforeUpdate . '" to: "' . $commentAfterUpdate . '" on task: "' . $task['title'] . '"'
         );
-        
+
         return redirect()
             ->to('/projects/' . $task['project_id'])
             ->with('success', 'Komentar berhasil diperbarui.');
@@ -182,6 +201,12 @@ class CommentController extends BaseController
         $comment = $context['comment'];
         $task = $context['task'];
         $access = $context['access'];
+
+        if (! empty($task['archived_at'])) {
+            return redirect()
+                ->to('/projects/' . $task['project_id'])
+                ->with('error', 'Task sudah diarsipkan dan komentar tidak dapat dihapus.');
+        }
 
         if ($access['project']['status'] === 'completed') {
             return redirect()

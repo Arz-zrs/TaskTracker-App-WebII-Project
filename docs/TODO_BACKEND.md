@@ -111,6 +111,16 @@
 * [x] Authorization Checks Review
 * [x] Full Form Validation Review
 
+##### Testing
+
+* [x] Project Flow Testing
+* [x] Project Member Flow Testing
+* [x] Task Flow Testing
+* [x] Comment Flow Testing
+* [x] Activity Log Testing
+* [x] Permission Testing
+* [x] Dashboard Data Testing
+
 ---
 
 #### 🚧 In Progress / Partial
@@ -122,16 +132,6 @@
 ##### Authorization & Roles
 
 * [ ] Final Permission Testing
-
-##### Testing
-
-* [ ] Project Flow Testing
-* [ ] Project Member Flow Testing
-* [ ] Task Flow Testing
-* [ ] Comment Flow Testing
-* [ ] Activity Log Testing
-* [ ] Permission Testing
-* [ ] Dashboard Data Testing
 
 ##### Future / Optional Features
 

@@ -172,6 +172,7 @@ Fungsi:
 * Membatasi status task hanya `todo`, `in_progress`, atau `done`.
 * Mencegah pembuatan, edit, archive, dan perubahan status task jika project sudah `completed`.
 * Mencatat activity log saat task dibuat, diperbarui, diarsipkan, atau statusnya diubah.
+* Mencegah edit, update, perubahan status, dan archive ulang pada task yang sudah diarsipkan.
 
 Method:
 
@@ -228,6 +229,7 @@ Fungsi:
 * Mencegah tambah, edit, dan hapus komentar jika project sudah `completed`.
 * Mengarahkan kembali ke detail project setelah komentar berhasil dibuat, diperbarui, atau dihapus.
 * Mencatat activity log saat komentar dibuat, diperbarui, atau dihapus.
+* Mencegah tambah, edit, update, dan hapus komentar pada task yang sudah diarsipkan.
 
 Method:
 
@@ -380,7 +382,8 @@ Mengubah status project menjadi completed dan membukanya kembali menjadi active
 Mencegah perubahan data project yang sudah berstatus completed
 Mencegah penambahan member, penghapusan member, pembuatan task, edit task, perubahan status task, pengarsipan task, dan penambahan komentar pada project yang telah completed
 Mencatat activity log saat project diselesaikan (completed) dan saat project dibuka kembali (reopen)
-
+Mencegah perubahan data pada task yang sudah diarsipkan. 
+Mencegah penambahan, edit, update, dan hapus komentar pada task yang sudah diarsipkan.
 ```
 
 ### Activity Log
