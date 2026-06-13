@@ -93,7 +93,7 @@
             <!-- Form Actions -->
             <div class="border-t border-slate-100 pt-6 flex items-center justify-end gap-4">
                 <a href="<?= site_url('projects') ?>" 
-                   class="px-6 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 active:bg-rose-700 text-white text-sm font-bold transition-all duration-200 flex items-center gap-1.5 focus:outline-none focus:ring-0">
+                    class="px-6 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 active:bg-rose-700 text-white text-sm font-bold transition-all duration-200 flex items-center gap-1.5 focus:outline-none focus:ring-0">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
                     </svg>
