@@ -127,6 +127,13 @@
 
 #### 🚧 In Progress / Partial
 
+##### Remaining Practical Features
+
+* [ ] Member Role Update Feature
+* [ ] Account Settings Page
+* [ ] Timeline Page Backend
+* [ ] Notification Bell Backend
+* [ ] Admin User Role Management / Admin Handoff
 ---
 
 #### ❌ Not Started
@@ -134,12 +141,3 @@
 ##### Authorization & Roles
 
 * [ ] Final Permission Testing
-
-##### Future / Optional Features
-
-* [ ] Member Role Update Feature
-* [ ] User Account Management
-* [ ] Avatar/Profile Update
-* [ ] Notification or Reminder System for Deadlines
-* [ ] Timeline Backend Data
-* [ ] Search Backend Logic for Projects and Tasks
