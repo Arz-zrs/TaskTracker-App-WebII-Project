@@ -44,12 +44,14 @@ $routes->post('/tasks/(:num)/comments', 'CommentController::store/$1', ['filter'
 $routes->get('/comments/(:num)/edit', 'CommentController::edit/$1', ['filter' => 'auth']);
 $routes->post('/comments/(:num)/update', 'CommentController::update/$1', ['filter' => 'auth']);
 $routes->post('/comments/(:num)/delete', 'CommentController::delete/$1', ['filter' => 'auth']);
-
+    
 $routes->get('/settings', 'AccountController::index', ['filter' => 'auth']);
 $routes->post('/settings/profile', 'AccountController::updateProfile', ['filter' => 'auth']);
 $routes->post('/settings/password', 'AccountController::updatePassword', ['filter' => 'auth']);
 
 $routes->get('/timeline', 'TimelineController::index', ['filter' => 'auth']);
+
+$routes->get('/notifications', 'NotificationController::index', ['filter' => 'auth']);
 ```
 
 * Route GET `/` digunakan untuk menampilkan halaman login, menggunakan GuestFilter agar user yang sudah login diarahkan ke dashboard.
@@ -84,6 +86,7 @@ $routes->get('/timeline', 'TimelineController::index', ['filter' => 'auth']);
 * Route POST `/settings/profile` digunakan untuk menyimpan perubahan profil user, seperti nama dan avatar.
 * Route POST `/settings/password` digunakan untuk menyimpan perubahan password user.
 * Route GET `/timeline` digunakan untuk menampilkan halaman timeline aktivitas project yang dapat diakses oleh user.
+* Route GET `/notifications` digunakan untuk menampilkan halaman notifikasi user yang sedang login.
 
 ## Controller yang sudah dibuat
 
@@ -313,6 +316,29 @@ Method:
 index()
 ```
 
+### NotificationController
+
+Fungsi:
+
+* Menampilkan halaman notifikasi untuk user yang sedang login.
+* Mengambil ID project yang dapat diakses user melalui `getAccessibleProjectIdsForUser($userId)`.
+* Menampilkan task terlambat dari project aktif yang belum diarsipkan.
+* Menampilkan task yang memiliki deadline hari ini.
+* Menampilkan task yang akan jatuh tempo dalam 7 hari ke depan.
+* Hanya menampilkan task yang belum selesai, belum diarsipkan, dan berada pada project dengan status `active`.
+* Mengambil activity log terbaru dari project yang dapat diakses user.
+* Menghubungkan data task dengan project dan assignee.
+* Menghubungkan activity log dengan user dan project.
+* Memformat activity log menggunakan `formatActivityLogs()` sebelum dikirim ke view.
+* Menghitung jumlah notifikasi berdasarkan total task terlambat, task deadline hari ini, dan task deadline mendatang.
+* Mengirim data `overdueTasks`, `dueTodayTasks`, `upcomingTasks`, `recentLogs`, dan `notificationCount` ke view.
+
+Method:
+
+```text
+index()
+```
+
 ## Model yang sudah dibuat
 
 ```text
@@ -370,6 +396,7 @@ Route yang sudah memakai AuthFilter:
 /settings/profile
 /settings/password
 /timeline
+/notifications
 ```
 
 ### GuestFilter
@@ -405,6 +432,7 @@ tasks/edit.php
 comments/edit.php
 account/settings.php
 timeline/index.php
+notifications/index.php
 ```
 
 Fungsi view:
@@ -421,6 +449,7 @@ Fungsi view:
 * comments/edit.php digunakan untuk menampilkan form edit komentar yang sudah ada.
 * account/settings.php digunakan untuk menampilkan halaman pengaturan akun, update profil, upload avatar, dan perubahan password.
 * timeline/index.php digunakan untuk menampilkan daftar timeline aktivitas project user.
+* notifications/index.php digunakan untuk menampilkan halaman notifikasi, termasuk task terlambat, task deadline hari ini, task deadline mendatang, dan activity log terbaru.
 
 ## Fitur yang sudah berjalan
 
@@ -477,6 +506,14 @@ Menampilkan avatar user pada dashboard jika avatar tersedia.
 Menampilkan halaman timeline berisi deadline task dan activity log project yang dapat diakses user.
 Menampilkan deadline task aktif berdasarkan project yang belum diarsipkan.
 Menampilkan activity log terbaru pada halaman timeline.
+Menampilkan halaman notifikasi untuk user yang sedang login.
+Menampilkan task terlambat dari project aktif yang dapat diakses user.
+Menampilkan task dengan deadline hari ini.
+Menampilkan task yang akan jatuh tempo dalam 7 hari ke depan.
+Menampilkan activity log terbaru dari project yang dapat diakses user.
+Menghitung jumlah notifikasi berdasarkan task terlambat, task deadline hari ini, dan task deadline mendatang.
+Menyembunyikan notifikasi dari project yang sudah diarsipkan atau berstatus completed.
+Menyembunyikan task yang sudah selesai atau sudah diarsipkan dari daftar notifikasi.
 ```
 
 ### Activity Log
