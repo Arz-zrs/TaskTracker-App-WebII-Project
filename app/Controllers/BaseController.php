@@ -70,123 +70,72 @@ abstract class BaseController extends Controller
     protected function formatActivityMessage(array $log)
     {
         $user = $log['user_name'] ?? 'User';
+        $detail = trim((string) ($log['detail'] ?? ''));
+
+        if ($detail !== '') {
+            return "{$user} {$detail}";
+        }
+
         $entity = $log['entity_type'] ?? '';
         $action = $log['action'] ?? '';
-        $detail = $log['detail'] ?? '';
 
         if ($entity === 'project' && $action === 'created') {
-            $detail = trim(str_replace('Project created:', '', $detail));
-
-            return $detail
-                ? "{$user} created project: {$detail}"
-                : "{$user} created a project.";
+            return "{$user} created a project.";
         }
 
         if ($entity === 'project' && $action === 'updated') {
-            $detail = trim(str_replace('Project updated:', '', $detail));
-
-            return $detail
-                ? "{$user} updated project: {$detail}"
-                : "{$user} updated a project.";
+            return "{$user} updated a project.";
         }
 
         if ($entity === 'project' && $action === 'archived') {
-            $detail = trim(str_replace('Project archived:', '', $detail));
-
-            return $detail
-                ? "{$user} archived project: {$detail}"
-                : "{$user} archived a project.";
+            return "{$user} archived a project.";
         }
 
         if ($entity === 'project' && $action === 'completed') {
-            $detail = trim(str_replace('Project completed:', '', $detail));
-
-            return $detail
-                ? "{$user} completed project: {$detail}"
-                : "{$user} completed a project.";
+            return "{$user} completed a project.";
         }
 
         if ($entity === 'project' && $action === 'reopened') {
-            $detail = trim(str_replace('Project reopened:', '', $detail));
-
-            return $detail
-                ? "{$user} reopened project: {$detail}"
-                : "{$user} reopened a project.";
+            return "{$user} reopened a project.";
         }
 
         if ($entity === 'task' && $action === 'created') {
-            $detail = trim(str_replace('Task created:', '', $detail));
-
-            return $detail
-                ? "{$user} created task to project: {$detail}"
-                : "{$user} created a task.";
-        }
-
-        if ($entity === 'task' && ($action === 'status_updated' || $action === 'status_changed')) {
-            $detail = trim(str_replace('Task status changed to', '', $detail));
-
-            return $detail
-                ? "{$user} changed task status from project to {$detail}"
-                : "{$user} changed task status.";
+            return "{$user} created a task.";
         }
 
         if ($entity === 'task' && $action === 'updated') {
-            $detail = trim(str_replace('Task updated:', '', $detail));
+            return "{$user} updated a task.";
+        }
 
-            return $detail
-                ? "{$user} updated task from project: {$detail}"
-                : "{$user} updated a task.";
+        if ($entity === 'task' && ($action === 'status_updated' || $action === 'status_changed')) {
+            return "{$user} changed task status.";
         }
 
         if ($entity === 'task' && $action === 'archived') {
-            $detail = trim(str_replace('Task archived:', '', $detail));
-
-            return $detail
-                ? "{$user} archived task from project: {$detail}"
-                : "{$user} archived a task.";
+            return "{$user} archived a task.";
         }
 
-
-        if ($entity === 'comment' && ($action === 'created')) {
-            $detail = trim(str_replace('Comment added:', '', $detail));
-
-            return $detail
-                ? "{$user} created comment {$detail} from task"
-                : "{$user} created a comment.";
+        if ($entity === 'comment' && $action === 'created') {
+            return "{$user} created a comment.";
         }
 
         if ($entity === 'comment' && $action === 'updated') {
-            $detail = trim(str_replace('Comment updated on task:', '', $detail));
-
-            return $detail
-                ? "{$user} updated comment on task: {$detail}"
-                : "{$user} updated a comment.";
+            return "{$user} updated a comment.";
         }
 
         if ($entity === 'comment' && $action === 'deleted') {
-            $detail = trim(str_replace('Comment deleted from task:', '', $detail));
-
-            return $detail
-                ? "{$user} deleted comment from task: {$detail}"
-                : "{$user} deleted a comment.";
+            return "{$user} deleted a comment.";
         }
 
         if ($entity === 'member' && $action === 'created') {
-            $detail = trim(str_replace('Member added:', '', $detail));
-
-            return $detail
-                ? "{$user} added member to project: {$detail}"
-                : "{$user} added a member.";
+            return "{$user} added a member.";
         }
 
         if ($entity === 'member' && $action === 'deleted') {
-            $detail = trim(str_replace('Member removed:', '', $detail));
-
-            return $detail
-                ? "{$user} removed member from project: {$detail}"
-                : "{$user} removed a member.";
+            return "{$user} removed a member.";
         }
-        return "{$user} melakukan aktivitas. {$detail}";
+
+        return "{$user} performed an activity.";
     }
 
     protected function formatActivityLogs(array $logs)
@@ -215,6 +164,21 @@ abstract class BaseController extends Controller
         ]);
     }
     
+    protected function shortText($text, $limit = 80)
+    {
+        $text = trim(preg_replace('/\s+/', ' ', (string) $text));
+
+        if ($text === '') {
+            return '';
+        }
+
+        if (strlen($text) <= $limit) {
+            return $text;
+        }
+
+        return substr($text, 0, $limit) . '...';
+    }
+
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
     {
         // Load here all helpers you want to be available in your controllers that extend BaseController.

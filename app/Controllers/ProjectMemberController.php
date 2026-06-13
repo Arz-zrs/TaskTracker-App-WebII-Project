@@ -65,7 +65,7 @@ class ProjectMemberController extends BaseController
             'member',
             $memberId,
             'created',
-            'Member added: ' . ($addedUser['name'] ?? 'Unknown User') . ' as ' . $role
+            'added member: ' . ($addedUser['name'] ?? 'Unknown User') . ' as ' . $role
         );
 
         return redirect()
@@ -112,7 +112,7 @@ class ProjectMemberController extends BaseController
             'member',
             $memberId,
             'deleted',
-            'Member removed: ' . ($removedUser['name'] ?? 'Unknown User')
+            'removed member: ' . ($removedUser['name'] ?? 'Unknown User')
         );
 
         return redirect()

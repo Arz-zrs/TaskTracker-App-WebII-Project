@@ -88,7 +88,7 @@ class TaskController extends BaseController
             'task',
             $taskId,
             'created',
-            'Task created: ' . $this->request->getPost('title')
+            'created task: "' . $this->request->getPost('title') . '"'
         );
 
         return redirect()
@@ -146,7 +146,7 @@ class TaskController extends BaseController
             'task',
             $taskId,
             'status_updated',
-            'Task status changed to ' . $newStatus
+            'updated task status: "' . $task['title'] . '" to ' . $newStatus
         );
 
         return redirect()
@@ -257,7 +257,7 @@ class TaskController extends BaseController
             'task',
             $taskId,
             'updated',
-            'Task updated: ' . $title
+            'updated task: "' . $title . '"'
         );
 
         return redirect()
@@ -300,7 +300,7 @@ class TaskController extends BaseController
             'task',
             $taskId,
             'archived',
-            'Task archived: ' . $task['title']
+            'archived task: "' . $task['title'] . '"'
         );
 
         return redirect()

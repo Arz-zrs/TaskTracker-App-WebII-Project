@@ -58,7 +58,7 @@ class CommentController extends BaseController
             'comment',
             $commentId,
             'created',
-            'Comment added: ' . $commentBody
+            'added comment: "' . $commentBody . '" on task: "' . $task['title'] . '"'
         );
         return redirect()
             ->to('/projects/' . $task['project_id'])
@@ -147,10 +147,13 @@ class CommentController extends BaseController
                 ->with('errors', $this->validator->getErrors());
         }
 
+        $commentBeforeUpdate = $comment['body'];
+        $commentAfterUpdate = $this->request->getPost('body');
+
         $commentModel = new CommentModel();
 
         $commentModel->update($commentId, [
-            'body' => $this->request->getPost('body'),
+            'body' => $commentAfterUpdate,
         ]);
 
         $this->logActivity(
@@ -158,9 +161,9 @@ class CommentController extends BaseController
             'comment',
             $commentId,
             'updated',
-            'Comment updated on task: ' . $task['title']
+            'updated comment from: "' . $commentBeforeUpdate . '" to: "' . $commentAfterUpdate . '" on task: "' . $task['title'] . '"'
         );
-
+        
         return redirect()
             ->to('/projects/' . $task['project_id'])
             ->with('success', 'Komentar berhasil diperbarui.');
@@ -204,7 +207,7 @@ class CommentController extends BaseController
             'comment',
             $commentId,
             'deleted',
-            'Comment deleted from task: ' . $task['title']
+            'deleted comment: "' . $comment['body'] . '" from task: "' . $task['title'] . '"'
         );
 
         return redirect()

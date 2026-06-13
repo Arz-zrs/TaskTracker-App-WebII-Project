@@ -177,7 +177,7 @@ class ProjectController extends BaseController
             'project',
             $projectId,
             'created',
-            'Project created: ' . $title
+            'created project: "' . $title . '"'
         );
 
         return redirect()
@@ -202,9 +202,7 @@ class ProjectController extends BaseController
         if (! $project) {
             throw PageNotFoundException::forPageNotFound('Project not found');
         }
-
-        $projectTitle = $project['title'];
-
+        
         $projectModel->update($id, [
             'archived_at' => date('Y-m-d H:i:s'),
         ]);
@@ -214,7 +212,7 @@ class ProjectController extends BaseController
             'project',
             $id,
             'archived',
-            'Project archived: ' . $projectTitle
+            'archived project: "' . $project['title'] . '"'
         );
 
         return redirect()
@@ -271,7 +269,7 @@ class ProjectController extends BaseController
             'project',
             $id,
             'updated',
-            'Project updated: ' . $this->request->getPost('title')
+            'updated project: "' . $this->request->getPost('title') . '"'
         );
 
         return redirect()
@@ -300,7 +298,7 @@ class ProjectController extends BaseController
         'project',
         $id,
         'completed',
-        'Project completed: ' . $access['project']['title']
+        'completed project: "' . $access['project']['title'] . '"'
     );
 
     return redirect()
@@ -329,7 +327,7 @@ class ProjectController extends BaseController
             'project',
             $id,
             'reopened',
-            'Project reopened: ' . $access['project']['title']
+            'reopened project: "' . $access['project']['title'] . '"'
         );
 
         return redirect()

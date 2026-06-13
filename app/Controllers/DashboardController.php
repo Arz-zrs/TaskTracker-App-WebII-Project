@@ -110,6 +110,17 @@ class DashboardController extends BaseController
         $recentLogsRaw = $logModel->getRecentActivity($accessibleProjectIds, 4);
         $recentLogs = $this->formatActivityLogs($recentLogsRaw);
 
+        $recentLogs = array_map(function ($log) {
+            if (
+                ! empty($log['project_title']) &&
+                ($log['entity_type'] ?? '') !== 'project'
+            ) {
+                $log['message'] .= ' from project "' . $log['project_title'] . '"';
+            }
+
+            return $log;
+        }, $recentLogs);
+
         return view('dashboard/index', [
             'name'              => session()->get('user_name'),
             'role'              => session()->get('role'),
