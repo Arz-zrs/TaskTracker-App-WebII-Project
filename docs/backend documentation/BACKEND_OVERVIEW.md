@@ -90,11 +90,11 @@ formatActivityLogs(array $logs)
 
 Fungsi:
 
-* Menampilkan halaman login
-* Memproses login
-* Mengecek email dan password
-* Menyimpan data user ke session
-* Logout dan menghapus session
+* Menampilkan halaman login.
+* Memproses login dengan mengecek email dan password.
+* Meregenerasi session ID setelah login berhasil untuk mencegah session fixation.
+* Menyimpan data user ke session.
+* Logout dan menghapus session.
 
 Method:
 

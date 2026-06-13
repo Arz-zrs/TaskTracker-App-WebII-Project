@@ -104,7 +104,8 @@
 
 ##### Validation & Security
 
-* [x]  Remove Temporary Test Routes and Test Controllers
+* [x] Remove Temporary Test Routes and Test Controllers
+* [x] Session Regeneration After Login
 
 ---
 
@@ -123,7 +124,6 @@
 * [ ] CSRF Protection Review
 * [ ] Full Form Validation Review
 * [ ] Authorization Checks Review
-* [ ] Session Regeneration After Login
 * [ ] Login Attempt Limit / Brute-force Protection
 
 ##### Testing

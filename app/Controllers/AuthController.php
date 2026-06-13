@@ -27,6 +27,8 @@ class AuthController extends BaseController
             return redirect()->back()->with('error', 'Password salah');
         }
 
+        session()->regenerate(true);
+
         session()->set([
             'user_id' => $user['id'],
             'user_name' => $user['name'],
@@ -36,7 +38,7 @@ class AuthController extends BaseController
 
         return redirect()->to('/dashboard');
     }
-
+    
     public function logout()
     {
         session()->destroy();
