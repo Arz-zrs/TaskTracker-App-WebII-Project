@@ -31,3 +31,6 @@ $routes->post('/tasks/(:num)/update', 'TaskController::update/$1', ['filter' => 
 $routes->post('/tasks/(:num)/archive', 'TaskController::archive/$1', ['filter' => 'auth']);
 
 $routes->post('/tasks/(:num)/comments', 'CommentController::store/$1', ['filter' => 'auth']);
+$routes->get('/comments/(:num)/edit', 'CommentController::edit/$1', ['filter' => 'auth']);
+$routes->post('/comments/(:num)/update', 'CommentController::update/$1', ['filter' => 'auth']);
+$routes->post('/comments/(:num)/delete', 'CommentController::delete/$1', ['filter' => 'auth']);

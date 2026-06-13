@@ -330,12 +330,59 @@
                                 <?php if (!empty($commentsByTask[$task['id']])): ?>
                                     <div class="space-y-3 mb-4 max-h-48 overflow-y-auto pr-1">
                                         <?php foreach ($commentsByTask[$task['id']] as $comment): ?>
+                                            <?php
+                                                $isCommentAuthor = (int) $comment['user_id'] === (int) session()->get('user_id');
+
+                                                $canEditComment =
+                                                    $isCommentAuthor &&
+                                                    $project['status'] !== 'completed' &&
+                                                    $projectRole !== 'klien';
+
+                                                $canDeleteComment =
+                                                    ($isCommentAuthor || $canManage) &&
+                                                    $project['status'] !== 'completed';
+                                            ?>
+
                                             <div class="bg-white border border-slate-100/80 rounded-2xl p-3 text-xs leading-relaxed shadow-sm">
                                                 <div class="flex items-center justify-between gap-3 mb-1">
                                                     <span class="font-bold text-slate-800"><?= esc($comment['user_name']) ?></span>
-                                                    <span class="text-[10px] text-slate-600 font-semibold"><?= date('d M Y H:i', strtotime($comment['created_at'])) ?></span>
+                                                    <span class="text-[10px] text-slate-600 font-semibold">
+                                                        <?= date('d M Y H:i', strtotime($comment['created_at'])) ?>
+                                                    </span>
                                                 </div>
+
                                                 <p class="text-slate-600 font-medium"><?= esc($comment['body']) ?></p>
+
+                                                <?php if ($canEditComment || $canDeleteComment): ?>
+                                                    <div class="flex items-center gap-2 mt-2">
+                                                        <?php if ($canEditComment): ?>
+                                                            <a 
+                                                                href="<?= site_url('comments/' . (int) $comment['id'] . '/edit') ?>"
+                                                                class="text-[10px] font-bold text-indigo-600 hover:text-indigo-800"
+                                                            >
+                                                                Edit
+                                                            </a>
+                                                        <?php endif; ?>
+
+                                                        <?php if ($canDeleteComment): ?>
+                                                            <form 
+                                                                action="<?= site_url('comments/' . (int) $comment['id'] . '/delete') ?>"
+                                                                method="post"
+                                                                onsubmit="return confirm('Delete this comment?')"
+                                                                style="display:inline;"
+                                                            >
+                                                                <?= csrf_field() ?>
+
+                                                                <button 
+                                                                    type="submit"
+                                                                    class="text-[10px] font-bold text-rose-600 hover:text-rose-800"
+                                                                >
+                                                                    Delete
+                                                                </button>
+                                                            </form>
+                                                        <?php endif; ?>
+                                                    </div>
+                                                <?php endif; ?>
                                             </div>
                                         <?php endforeach; ?>
                                     </div>
@@ -343,7 +390,7 @@
 
                                 <!-- Post Comment Form -->
                                 <?php if (($projectRole ?? '') !== 'klien'): ?>
-                                    <form action="<?= site_url('tasks/' . esc($task['id']) . '/comments') ?>" method="post" class="flex gap-2">
+                                    <form action="<?= site_url('tasks/' . (int) $task['id'] . '/comments') ?>" method="post" class="flex gap-2">
                                         <?= csrf_field() ?>
 
                                         <input 

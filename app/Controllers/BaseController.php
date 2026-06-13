@@ -51,6 +51,7 @@ abstract class BaseController extends Controller
 
         throw PageNotFoundException::forPageNotFound('Project not found');
     }
+
     protected function formatDateTime($dateTime)
     {
         if (empty($dateTime)) {
@@ -117,7 +118,7 @@ abstract class BaseController extends Controller
             $detail = trim(str_replace('Task created:', '', $detail));
 
             return $detail
-                ? "{$user} created task: {$detail}"
+                ? "{$user} created task to project: {$detail}"
                 : "{$user} created a task.";
         }
 
@@ -125,7 +126,7 @@ abstract class BaseController extends Controller
             $detail = trim(str_replace('Task status changed to', '', $detail));
 
             return $detail
-                ? "{$user} changed task status to {$detail}"
+                ? "{$user} changed task status from project to {$detail}"
                 : "{$user} changed task status.";
         }
 
@@ -133,7 +134,7 @@ abstract class BaseController extends Controller
             $detail = trim(str_replace('Task updated:', '', $detail));
 
             return $detail
-                ? "{$user} updated task: {$detail}"
+                ? "{$user} updated task from project: {$detail}"
                 : "{$user} updated a task.";
         }
 
@@ -141,24 +142,40 @@ abstract class BaseController extends Controller
             $detail = trim(str_replace('Task archived:', '', $detail));
 
             return $detail
-                ? "{$user} archived task: {$detail}"
+                ? "{$user} archived task from project: {$detail}"
                 : "{$user} archived a task.";
         }
 
 
         if ($entity === 'comment' && ($action === 'created')) {
-            $detail = trim(str_replace('Comment created:', '', $detail));
+            $detail = trim(str_replace('Comment added:', '', $detail));
 
             return $detail
-                ? "{$user} created comment: {$detail}"
+                ? "{$user} created comment {$detail} from task"
                 : "{$user} created a comment.";
+        }
+
+        if ($entity === 'comment' && $action === 'updated') {
+            $detail = trim(str_replace('Comment updated on task:', '', $detail));
+
+            return $detail
+                ? "{$user} updated comment on task: {$detail}"
+                : "{$user} updated a comment.";
+        }
+
+        if ($entity === 'comment' && $action === 'deleted') {
+            $detail = trim(str_replace('Comment deleted from task:', '', $detail));
+
+            return $detail
+                ? "{$user} deleted comment from task: {$detail}"
+                : "{$user} deleted a comment.";
         }
 
         if ($entity === 'member' && $action === 'created') {
             $detail = trim(str_replace('Member added:', '', $detail));
 
             return $detail
-                ? "{$user} added member: {$detail}"
+                ? "{$user} added member to project: {$detail}"
                 : "{$user} added a member.";
         }
 
@@ -166,7 +183,7 @@ abstract class BaseController extends Controller
             $detail = trim(str_replace('Member removed:', '', $detail));
 
             return $detail
-                ? "{$user} removed member: {$detail}"
+                ? "{$user} removed member from project: {$detail}"
                 : "{$user} removed a member.";
         }
         return "{$user} melakukan aktivitas. {$detail}";
