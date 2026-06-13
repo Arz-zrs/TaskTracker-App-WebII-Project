@@ -397,7 +397,7 @@ user_id yaitu ID user yang melakukan aktivitas.
 project_id yaitu ID project tempat aktivitas terjadi.
 entity_type yaitu jenis data yang terkena aktivitas, seperti project, member, task, atau comment.
 entity_id yaitu ID dari data yang terkena aktivitas.
-action yaitu aksi yang dilakukan, seperti created, archived, atau status_updated.
+action yaitu aksi yang dilakukan, seperti created, archived, atau status_changed.
 detail yaitu keterangan tambahan dari aktivitas.
 created_at yaitu waktu aktivitas dilakukan.
 ```

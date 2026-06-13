@@ -107,7 +107,7 @@ abstract class BaseController extends Controller
             return "{$user} updated a task.";
         }
 
-        if ($entity === 'task' && ($action === 'status_updated' || $action === 'status_changed')) {
+        if ($entity === 'task' && ($action === 'status_changed')) {
             return "{$user} changed task status.";
         }
 

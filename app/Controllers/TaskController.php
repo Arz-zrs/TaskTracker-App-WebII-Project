@@ -145,7 +145,7 @@ class TaskController extends BaseController
             $task['project_id'],
             'task',
             $taskId,
-            'status_updated',
+            'status_changed',
             'updated task status: "' . $task['title'] . '" to ' . $newStatus
         );
 

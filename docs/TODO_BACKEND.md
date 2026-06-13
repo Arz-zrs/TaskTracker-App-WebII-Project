@@ -99,6 +99,7 @@
 * [x] Activity Log for Project Actions
 * [x] Activity Log for Task Actions
 * [x] Activity Log for Comment Actions
+* [x] Standardize Activity Log Action Names
 
 
 ##### Validation & Security
@@ -116,11 +117,6 @@
 ##### Authorization & Roles
 
 * [ ] Final Permission Testing
-
-##### Activity Log Improvements
-
-* [ ] Standardize Activity Log Action Names
-* [ ] Limit Recent Activity Logs Displayed
 
 ##### Validation & Security
 
@@ -146,6 +142,5 @@
 * [ ] User Account Management
 * [ ] Avatar/Profile Update
 * [ ] Notification or Reminder System for Deadlines
-* [ ] Kanban Board Backend Data
 * [ ] Timeline Backend Data
 * [ ] Search Backend Logic for Projects and Tasks
