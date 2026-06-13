@@ -95,6 +95,8 @@ Fungsi:
 * Meregenerasi session ID setelah login berhasil untuk mencegah session fixation.
 * Menyimpan data user ke session.
 * Logout dan menghapus session.
+* Membatasi percobaan login menggunakan throttler.
+* Menggunakan cache key throttler yang aman dengan format `login_` dan hash `md5`.
 
 Method:
 
