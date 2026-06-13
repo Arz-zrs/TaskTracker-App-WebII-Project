@@ -58,6 +58,43 @@ class AuthController extends BaseController
 
         return redirect()->to('/dashboard');
     }
+
+    public function register()
+    {
+        return view('auth/register');
+    }
+
+    public function attemptRegister()
+    {
+        $rules = [
+            'name' => 'required|min_length[3]|max_length[100]',
+            'email' => 'required|valid_email|is_unique[users.email]',
+            'password' => 'required|min_length[8]',
+            'password_confirm' => 'required|matches[password]',
+            'role' => 'required|in_list[member,klien]',
+        ];
+
+        if (! $this->validate($rules)) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('errors', $this->validator->getErrors());
+        }
+
+        $userModel = new UserModel();
+
+        $userModel->insert([
+            'name' => $this->request->getPost('name'),
+            'email' => strtolower(trim($this->request->getPost('email'))),
+            'password' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
+            'role' => $this->request->getPost('role'),
+            'created_at' => date('Y-m-d H:i:s'),
+        ]);
+
+        return redirect()
+            ->to('/')
+            ->with('success', 'Account created successfully. Please login.');
+    }
     
     public function logout()
     {

@@ -4,8 +4,12 @@ use CodeIgniter\Router\RouteCollection;
 
 /** @var RouteCollection $routes */
 $routes->get('/', 'AuthController::login', ['filter' => 'guest']);
+
 $routes->post('/login', 'AuthController::attemptLogin', ['filter' => 'guest']);
 $routes->get('/logout', 'AuthController::logout', ['filter' => 'auth']);
+
+$routes->get('/register', 'AuthController::register', ['filter' => 'guest']);
+$routes->post('/register', 'AuthController::attemptRegister', ['filter' => 'guest']);
 
 $routes->get('/dashboard', 'DashboardController::index', ['filter' => 'auth']);
 $routes->get('/projects', 'ProjectController::index', ['filter' => 'auth']);

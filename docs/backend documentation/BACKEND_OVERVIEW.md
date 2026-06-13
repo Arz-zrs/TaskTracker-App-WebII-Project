@@ -4,8 +4,12 @@
 
 ```php
 $routes->get('/', 'AuthController::login', ['filter' => 'guest']);
+
 $routes->post('/login', 'AuthController::attemptLogin', ['filter' => 'guest']);
 $routes->get('/logout', 'AuthController::logout', ['filter' => 'auth']);
+
+$routes->get('/register', 'AuthController::register', ['filter' => 'guest']);
+$routes->post('/register', 'AuthController::attemptRegister', ['filter' => 'guest']);
 
 $routes->get('/dashboard', 'DashboardController::index', ['filter' => 'auth']);
 $routes->get('/projects', 'ProjectController::index', ['filter' => 'auth']);
@@ -90,19 +94,25 @@ formatActivityLogs(array $logs)
 
 Fungsi:
 
-* Menampilkan halaman login.
-* Memproses login dengan mengecek email dan password.
-* Meregenerasi session ID setelah login berhasil untuk mencegah session fixation.
-* Menyimpan data user ke session.
+* Menampilkan halaman login dan register. 
+* Memproses login dengan mengecek email dan password. 
+* Memproses register untuk role `member` dan `klien`. 
+* Mencegah register membuat akun dengan role `admin`. 
+* Melakukan validasi input register seperti name, email, password, password confirmation, dan role. 
+* Menyimpan password menggunakan `password_hash()`. 
+* Meregenerasi session ID setelah login berhasil untuk mencegah session fixation. 
+* Menyimpan data user ke session. 
+* Membatasi percobaan login menggunakan throttler. 
+* Menggunakan cache key throttler yang aman dengan format `login_` dan hash `md5`. 
 * Logout dan menghapus session.
-* Membatasi percobaan login menggunakan throttler.
-* Menggunakan cache key throttler yang aman dengan format `login_` dan hash `md5`.
 
 Method:
 
 ```text
 login()
 attemptLogin()
+register() 
+attemptRegister
 logout()
 ```
 
@@ -253,6 +263,7 @@ ActivityLogModel
 
 Fungsi model:
 
+* UserModel mengizinkan field `created_at` dan `updated_at` agar data waktu user dapat disimpan saat register
 * Menghubungkan controller dengan tabel database
 * Menentukan nama tabel
 * Menentukan kolom yang boleh diisi
@@ -308,12 +319,14 @@ Route yang sudah memakai GuestFilter:
 ```text
 /
 /login
+/register
 ```
 
 ## View yang sudah dibuat   
 
 ```text
 auth/login.php
+auth/register.php
 dashboard/index.php
 projects/index.php
 projects/show.php
@@ -327,6 +340,7 @@ comments/edit.php digunakan untuk menampilkan form edit komentar yang sudah ada.
 Fungsi view:
 
 * auth/login.php digunakan untuk menampilkan halaman login.
+* auth/register.php digunakan untuk menampilkan form register akun baru dengan pilihan role `member` atau `klien`.
 * dashboard/index.php digunakan untuk menampilkan halaman dashboard setelah user berhasil login, termasuk ringkasan project, task, dan aktivitas terbaru.
 * projects/index.php digunakan untuk menampilkan daftar project yang dapat diakses oleh user berdasarkan role sebagai admin atau member.
 * projects/show.php digunakan untuk menampilkan detail project, daftar task, komentar, team members, form tambah member, tombol edit/archive project, dan activity log.
@@ -340,6 +354,7 @@ Fungsi view:
 
 ```text
 Login, logout, session login, dan protected route Dashboard setelah login
+Register akun baru dengan role member atau klien.
 Menampilkan daftar project berdasarkan akses user sebagai admin atau member
 Menampilkan detail project beserta member, task, komentar, dan activity log
 Membuat project, mengedit, mengarsip dengan batasan hanya untuk user role admin

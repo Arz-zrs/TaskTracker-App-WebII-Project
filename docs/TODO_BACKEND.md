@@ -21,6 +21,8 @@
 * [x] Authentication Testing
 * [x] Basic Login Validation Messages
 * [x] Redirect Logged-in User Away from Login Page
+* [x] Register Page
+* [x] Register Functionality (Member, Client)
 
 ##### Dashboard
 
