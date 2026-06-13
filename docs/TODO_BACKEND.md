@@ -108,6 +108,8 @@
 * [x] Session Regeneration After Login
 * [x] CSRF Protection Review
 * [x] Login Attempt Limit / Brute-force Protection
+* [x] Authorization Checks Review
+* [x] Full Form Validation Review
 
 ---
 
@@ -120,11 +122,6 @@
 ##### Authorization & Roles
 
 * [ ] Final Permission Testing
-
-##### Validation & Security
-
-* [ ] Full Form Validation Review
-* [ ] Authorization Checks Review
 
 ##### Testing
 

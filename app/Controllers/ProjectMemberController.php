@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\ProjectMemberModel;
+use App\Models\UserModel;
 
 class ProjectMemberController extends BaseController
 {
@@ -23,7 +24,7 @@ class ProjectMemberController extends BaseController
         }
 
         $rules = [
-            'user_id' => 'required|integer',
+            'user_id' => 'required|integer|is_not_unique[users.id]',
             'role' => 'required|in_list[member,klien]',
         ];
 
@@ -35,20 +36,31 @@ class ProjectMemberController extends BaseController
         }
 
         $memberModel = new ProjectMemberModel();
+        $userModel = new UserModel();
+
+        $userId = (int) $this->request->getPost('user_id');
+        $role = $this->request->getPost('role');
+
+        if ((int) $access['project']['admin_id'] === $userId) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', 'Admin project tidak perlu ditambahkan sebagai member.');
+        }
 
         $exists = $memberModel
             ->where('project_id', $projectId)
-            ->where('user_id', $this->request->getPost('user_id'))
+            ->where('user_id', $userId)
             ->first();
 
         if ($exists) {
             return redirect()
                 ->back()
+                ->withInput()
                 ->with('error', 'User sudah menjadi member project ini.');
         }
 
-        $userId = $this->request->getPost('user_id');
-        $role = $this->request->getPost('role');
+        $addedUser = $userModel->find($userId);
 
         $memberId = $memberModel->insert([
             'project_id' => $projectId,
@@ -56,9 +68,6 @@ class ProjectMemberController extends BaseController
             'role' => $role,
             'joined_at' => date('Y-m-d H:i:s'),
         ]);
-
-        $userModel = new \App\Models\UserModel();
-        $addedUser = $userModel->find($userId);
 
         $this->logActivity(
             $projectId,
@@ -90,6 +99,7 @@ class ProjectMemberController extends BaseController
         }
 
         $memberModel = new ProjectMemberModel();
+        $userModel = new UserModel();
 
         $member = $memberModel
             ->where('project_id', $projectId)
@@ -102,7 +112,6 @@ class ProjectMemberController extends BaseController
                 ->with('error', 'Member tidak ditemukan.');
         }
 
-        $userModel = new \App\Models\UserModel();
         $removedUser = $userModel->find($member['user_id']);
 
         $memberModel->delete($memberId);

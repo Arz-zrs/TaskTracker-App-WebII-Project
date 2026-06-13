@@ -204,6 +204,8 @@ Fungsi:
 * Menampilkan pesan error jika user tidak memiliki akses atau member tidak ditemukan.
 * Mencegah penambahan member jika project berstatus completed.
 * Mencegah penghapusan member jika project berstatus completed.
+* Memastikan `user_id` yang dipilih benar-benar ada pada tabel `users`.
+* Mencegah admin project ditambahkan lagi sebagai member pada project yang sama.
 
 Method:
 
