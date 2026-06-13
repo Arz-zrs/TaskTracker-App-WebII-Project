@@ -26,6 +26,7 @@ $routes->post('/projects/(:num)/update', 'ProjectController::update/$1', ['filte
 $routes->get('/projects/(:num)', 'ProjectController::show/$1', ['filter' => 'auth']);
 $routes->post('/projects/(:num)/members', 'ProjectMemberController::store/$1', ['filter' => 'auth']);
 $routes->post('/projects/(:num)/members/(:num)/remove', 'ProjectMemberController::remove/$1/$2', ['filter' => 'auth']);
+$routes->post('/projects/(:num)/members/(:num)/role', 'ProjectMemberController::updateRole/$1/$2', ['filter' => 'auth']);
 
 $routes->get('/projects/(:num)/tasks/create', 'TaskController::create/$1', ['filter' => 'auth']);
 $routes->post('/projects/(:num)/tasks/store', 'TaskController::store/$1', ['filter' => 'auth']);
@@ -55,6 +56,7 @@ $routes->post('/comments/(:num)/delete', 'CommentController::delete/$1', ['filte
 * Route GET `/projects/(:num)` digunakan untuk menampilkan detail project berdasarkan ID.
 * Route POST `/projects/(:num)/members` digunakan untuk menambahkan member ke project berdasarkan ID project.
 * Route POST `/projects/(:num)/members/(:num)/remove` digunakan untuk menghapus member dari project berdasarkan ID project dan ID member.
+* Route POST `/projects/(:num)/members/(:num)/role` digunakan untuk mengubah role member project berdasarkan ID project dan ID member.
 * Route GET `/projects/(:num)/tasks/create` digunakan untuk menampilkan form tambah task berdasarkan ID project.
 * Route POST `/projects/(:num)/tasks/store` digunakan untuk menyimpan data task baru berdasarkan ID project.
 * Route POST `/tasks/(:num)/status` digunakan untuk memperbarui status task berdasarkan ID task.
@@ -217,12 +219,14 @@ Fungsi:
 * Mencegah penghapusan member jika project berstatus completed.
 * Memastikan `user_id` yang dipilih benar-benar ada pada tabel `users`.
 * Mencegah admin project ditambahkan lagi sebagai member pada project yang sama.
+* Mengubah role member project menjadi `member` atau `klien`.
 
 Method:
 
 ```text
 store($projectId)
 remove($projectId, $memberId)
+updateRole($projectId, $memberId)
 ```
 
 ### CommentController
@@ -292,6 +296,7 @@ Route yang sudah memakai AuthFilter:
 /projects/(:num)/update
 /projects/(:num)/members
 /projects/(:num)/members/(:num)/remove
+/projects/(:num)/members/(:num)/role
 /projects/(:num)/tasks/create
 /projects/(:num)/tasks/store
 /tasks/(:num)/archive
@@ -334,7 +339,7 @@ projects/create.php
 projects/edit.php
 tasks/create.php
 tasks/edit.php
-comments/edit.php digunakan untuk menampilkan form edit komentar yang sudah ada.
+comments/edit.php
 ```
 
 Fungsi view:
@@ -434,6 +439,7 @@ Project diselesaikan (completed).
 Project dibuka kembali (reopen).
 Member ditambahkan ke project.
 Member dihapus dari project.
+Member role diganti di project
 Task dibuat.
 Task diperbarui.
 Task diarsipkan.
@@ -450,6 +456,7 @@ BaseController menyediakan method logActivity() untuk menyimpan activity log.
 ProjectController mencatat aktivitas saat project dibuat, diperbarui, diarsipkan, diselesaikan (completed), dan dibuka kembali (reopen).
 TaskController mencatat aktivitas saat task dibuat, diperbarui, diarsipkan, dan status task diperbarui.
 CommentController mencatat aktivitas saat komentar ditambahkan, diperbarui, dan dihapus.
+ProjectMemberController mencatat aktivitas saat member ditambahkan, dihapus, dan role member diperbarui.
 ```
 
 Method:

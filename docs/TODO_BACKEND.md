@@ -67,6 +67,7 @@
 * [x] Add Activity Log for Member Removed
 * [x] Define Clear `klien` Permission Rules
 * [x] Enforce `klien` View-Only Access
+* [x] Member Role Update Feature
 
 ##### Task Module
 
@@ -129,7 +130,6 @@
 
 ##### Remaining Practical Features
 
-* [ ] Member Role Update Feature
 * [ ] Account Settings Page
 * [ ] Timeline Page Backend
 * [ ] Notification Bell Backend

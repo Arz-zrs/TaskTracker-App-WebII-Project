@@ -525,13 +525,62 @@
                         </div>
                         
                         <div class="flex items-center gap-2 shrink-0">
-                            <span class="text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-full tracking-wider border 
-                                <?= $member['role'] === 'member' 
-                                    ? 'bg-blue-50 text-blue-700 border-blue-150' 
-                                    : 'bg-amber-50 text-amber-700 border-amber-150' ?>">
-                                <?= esc($member['role']) ?>
-                            </span>
+                            <?php if ($canManage && $project['status'] !== 'completed'): ?>
+                                <form
+                                    action="<?= site_url('projects/' . esc($project['id']) . '/members/' . esc($projectMemberId) . '/role') ?>"
+                                    method="post"
+                                    class="inline-flex items-center gap-1"
+                                >
+                                    <?= csrf_field() ?>
 
+                                    <div class="relative">
+                                        <select
+                                            name="role"
+                                            class="appearance-none cursor-pointer text-[9px] font-extrabold uppercase tracking-wider pl-2.5 pr-6 py-1 rounded-full border outline-none transition-all duration-200 focus:ring-2
+                                                <?= $member['role'] === 'member'
+                                                    ? 'bg-blue-50 text-blue-700 border-blue-150 hover:bg-blue-100 focus:ring-blue-100'
+                                                    : 'bg-amber-50 text-amber-700 border-amber-150 hover:bg-amber-100 focus:ring-amber-100' ?>"
+                                        >
+                                            <option value="member" <?= $member['role'] === 'member' ? 'selected' : '' ?>>
+                                                Member
+                                            </option>
+                                            <option value="klien" <?= $member['role'] === 'klien' ? 'selected' : '' ?>>
+                                                Klien
+                                            </option>
+                                        </select>
+
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 20 20"
+                                            fill="currentColor"
+                                            class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3
+                                                <?= $member['role'] === 'member' ? 'text-blue-700' : 'text-amber-700' ?>"
+                                        >
+                                            <path fill-rule="evenodd" d="M5.22 7.22a.75.75 0 0 1 1.06 0L10 10.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 8.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+
+                                    <button
+                                        type="submit"
+                                        class="inline-flex items-center justify-center text-[#4F46E5] hover:text-indigo-700 p-1.5 hover:bg-indigo-50 rounded-lg transition-colors"
+                                        title="Update Role"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="2.2" stroke="currentColor" class="w-4 h-4">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M4.5 12.75 9 17.25 19.5 6.75" />
+                                        </svg>
+                                    </button>
+                                </form>
+                            <?php else: ?>
+                                <span class="text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-full tracking-wider border 
+                                    <?= $member['role'] === 'member' 
+                                        ? 'bg-blue-50 text-blue-700 border-blue-150' 
+                                        : 'bg-amber-50 text-amber-700 border-amber-150' ?>">
+                                    <?= esc($member['role']) ?>
+                                </span>
+                            <?php endif; ?>
+                            
                             <?php if ($canManage): ?>
                                 <form action="<?= site_url('projects/' . esc($project['id']) . '/members/' . esc($projectMemberId) . '/remove') ?>"
                                     method="post"

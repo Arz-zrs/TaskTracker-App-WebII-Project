@@ -128,4 +128,72 @@ class ProjectMemberController extends BaseController
             ->to('/projects/' . $projectId)
             ->with('success', 'Member berhasil dihapus dari project.');
     }
+
+    public function updateRole($projectId, $memberId)
+    {
+        $access = $this->getProjectAccess($projectId);
+
+        if (! $access['is_admin']) {
+            return redirect()
+                ->to('/projects/' . $projectId)
+                ->with('error', 'Kamu tidak punya akses untuk mengubah role member.');
+        }
+
+        if ($access['project']['status'] === 'completed') {
+            return redirect()
+                ->to('/projects/' . $projectId)
+                ->with('error', 'Project sudah selesai dan member tidak dapat diubah.');
+        }
+
+        $rules = [
+            'role' => 'required|in_list[member,klien]',
+        ];
+
+        if (! $this->validate($rules)) {
+            return redirect()
+                ->back()
+                ->with('errors', $this->validator->getErrors());
+        }
+
+        $memberModel = new ProjectMemberModel();
+
+        $member = $memberModel
+            ->where('project_id', $projectId)
+            ->where('id', $memberId)
+            ->first();
+
+        if (! $member) {
+            return redirect()
+                ->to('/projects/' . $projectId)
+                ->with('error', 'Member tidak ditemukan.');
+        }
+
+        $newRole = $this->request->getPost('role');
+        $oldRole = $member['role'];
+
+        if ($oldRole === $newRole) {
+            return redirect()
+                ->to('/projects/' . $projectId)
+                ->with('success', 'Role member tidak berubah.');
+        }
+
+        $memberModel->update($memberId, [
+            'role' => $newRole,
+        ]);
+
+        $userModel = new UserModel();
+        $updatedUser = $userModel->find($member['user_id']);
+
+        $this->logActivity(
+            $projectId,
+            'member',
+            $memberId,
+            'updated',
+            'changed member ' . ($updatedUser['name'] ?? 'Unknown User') . ' role from ' . $oldRole . ' to ' . $newRole . ' in project "' . $access['project']['title'] . '"'
+        );
+
+        return redirect()
+            ->to('/projects/' . $projectId)
+            ->with('success', 'Role member berhasil diubah.');
+    }
 }
