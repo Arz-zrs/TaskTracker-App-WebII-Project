@@ -3,7 +3,8 @@
 use CodeIgniter\Router\RouteCollection;
 
 /** @var RouteCollection $routes */
-$routes->get('/', 'AuthController::login', ['filter' => 'guest']);
+$routes->get('/', 'HomeController::index');
+$routes->get('/login', 'AuthController::login', ['filter' => 'guest']);
 
 $routes->post('/login', 'AuthController::attemptLogin', ['filter' => 'guest']);
 $routes->get('/logout', 'AuthController::logout', ['filter' => 'auth']);

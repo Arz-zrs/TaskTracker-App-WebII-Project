@@ -93,7 +93,7 @@ class AuthController extends BaseController
         ]);
 
         return redirect()
-            ->to('/')
+            ->to('/login')
             ->with('success', 'Account created successfully. Please login.');
     }
     
