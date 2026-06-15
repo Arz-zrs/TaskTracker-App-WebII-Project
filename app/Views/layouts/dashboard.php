@@ -50,12 +50,13 @@
             <!-- Header Logo -->
             <div class="px-6 py-6 flex items-center justify-between border-b border-indigo-50/50">
                 <div class="flex items-center gap-3">
-                    <div class="h-9 w-9 bg-[#4F46E5] rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-md shadow-indigo-200">
-                        T
+                    <div class="h-9 w-9 bg-[#4F46E5] rounded-xl flex items-center justify-center text-white font-bold shadow-md shadow-indigo-200">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="3.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
+                        </svg>
                     </div>
                     <div>
                         <h1 class="text-xl font-bold text-slate-900 tracking-tight leading-none">TaskTracker</h1>
-                        <span class="text-[10px] text-indigo-600 font-bold tracking-wide mt-1 block">Vibrant Productivity</span>
                     </div>
                 </div>
 
