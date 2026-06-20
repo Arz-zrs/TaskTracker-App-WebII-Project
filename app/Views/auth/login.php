@@ -149,9 +149,6 @@
                         <label for="password" class="block text-sm font-semibold text-slate-700">
                             Password
                         </label>
-                        <a href="#" class="text-xs text-indigo-600 hover:text-indigo-700 font-semibold transition duration-150">
-                            Forgot password?
-                        </a>
                     </div>
                     <div class="relative">
                         <input
@@ -178,19 +175,6 @@
                             </svg>
                         </button>
                     </div>
-                </div>
-
-                <!-- check remember me -->
-                <div class="flex items-center gap-2.5">
-                    <input
-                        type="checkbox"
-                        id="remember"
-                        name="remember"
-                        class="w-4 h-4 rounded border-slate-300 accent-indigo-600 cursor-pointer focus:ring-indigo-500/20"
-                    >
-                    <label for="remember" class="text-sm text-slate-700 cursor-pointer select-none">
-                        Remember me
-                    </label>
                 </div>
 
                 <!-- Submit Button -->
