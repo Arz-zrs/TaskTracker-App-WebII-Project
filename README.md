@@ -91,3 +91,6 @@ https://tasktracker-uas-web.me/
 ```
 
 note: host machine harus nyala docker + run `cloudflared tunnel run tasktracker` buat activate server
+
+### Deployment Info
+Deployment dilakukan dengan Cloudflared dengan domain yang di-register melalui namecheap.com (.me diambil dari GitHub Student Pack) serta virtualisasi web server dan database server melalui docker-compose.
