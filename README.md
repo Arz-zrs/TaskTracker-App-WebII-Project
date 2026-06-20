@@ -77,10 +77,17 @@ Project/Task Tracker App
 ### Team
 - Frontend: Rika Fauliana Rahmi [2410817120017]<br>
 - Backend : Sebastian Abe Santoso [2410817210002]<br>
-- Database: Arya Arrozza Ridho Syaputra [2410817210010]<br>
+- Database & Deployment: Arya Arrozza Ridho Syaputra [2410817210010]<br>
 
 ## Project Documentation
 
 - [Documentation](./docs/) - Project documentation and TODO lists
 - [Database Docs](./docs/database%20documentation/DATABASE.md) - Database Documentation
 - [Backend Docs](./docs/backend%20documentation/BACKEND_OVERVIEW.md) - Backend Documentation
+
+## Website link
+```
+https://tasktracker-uas-web.me/
+```
+
+note: host machine harus nyala docker + run `cloudflared tunnel run tasktracker` buat activate server
