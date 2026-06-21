@@ -3,7 +3,8 @@
 ## Routes yang sudah dibuat
 
 ```php
-$routes->get('/', 'AuthController::login', ['filter' => 'guest']);
+$routes->get('/', 'HomeController::index');
+$routes->get('/login', 'AuthController::login', ['filter' => 'guest']);
 
 $routes->post('/login', 'AuthController::attemptLogin', ['filter' => 'guest']);
 $routes->get('/logout', 'AuthController::logout', ['filter' => 'auth']);
@@ -51,7 +52,8 @@ $routes->get('/notifications', 'NotificationController::index', ['filter' => 'au
 $routes->get('/search', 'SearchController::index', ['filter' => 'auth']);
 ```
 
-* Route GET `/` digunakan untuk menampilkan halaman login, menggunakan GuestFilter agar user yang sudah login diarahkan ke dashboard.
+* Route GET `/` digunakan untuk menampilkan halaman landing page.
+* Route GET `/login` digunakan untuk menampilkan halaman login, menggunakan GuestFilter agar user yang sudah login diarahkan ke dashboard.
 * Route POST `/login` digunakan untuk memproses percobaan login, menggunakan GuestFilter agar user yang sudah login tidak memproses login ulang.
 * Route GET `/register` digunakan untuk menampilkan halaman register, menggunakan GuestFilter agar user yang sudah login diarahkan ke dashboard.
 * Route POST `/register` digunakan untuk memproses pembuatan akun baru, menggunakan GuestFilter agar user yang sudah login tidak melakukan register ulang.
@@ -87,6 +89,19 @@ $routes->get('/search', 'SearchController::index', ['filter' => 'auth']);
 * Route GET `/search` digunakan untuk menampilkan halaman pencarian project dan task yang dapat diakses oleh user yang sedang login.
 
 ## Controller yang sudah dibuat
+
+### HomeController
+
+Fungsi:
+
+* Menampilkan halaman landing page jika user belum login.
+* Mengarahkan user yang sudah login ke halaman dashboard.
+
+Method:
+
+```text
+index()
+```
 
 ### BaseController
 
@@ -293,6 +308,7 @@ store($taskId)
 edit($commentId) 
 update($commentId) 
 delete($commentId)
+getCommentContext($commentId)
 ```
 
 ### TimelineController
@@ -451,6 +467,8 @@ POST /register
 ## View yang sudah dibuat   
 
 ```text
+landingpage/landing.php
+layouts/
 auth/login.php
 auth/register.php
 dashboard/index.php
@@ -469,6 +487,8 @@ search/index.php
 
 Fungsi view:
 
+* landingpage/landing.php digunakan untuk menampilkan halaman landing page awal.
+* layouts/ digunakan untuk menyimpan template atau struktur HTML dasar yang digunakan oleh view lain.
 * auth/login.php digunakan untuk menampilkan halaman login.
 * auth/register.php digunakan untuk menampilkan form register akun baru dengan pilihan role `member` atau `klien`.
 * dashboard/index.php digunakan untuk menampilkan halaman dashboard setelah user berhasil login, termasuk ringkasan project, task, dan aktivitas terbaru.
